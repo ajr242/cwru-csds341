@@ -1,0 +1,8 @@
+# Ignore build files
+target/
+build/
+*.class
+
+# Ignore package files
+*.jar
+*.war

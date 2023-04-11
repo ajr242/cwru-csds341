@@ -1,0 +1,5 @@
+# tar --exclude-from exclude.lst -czvf /home/mohsen/backup/template-java.tar.gz ../template-java/
+
+*.class
+*.jar
+*.log
