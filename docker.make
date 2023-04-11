@@ -1,5 +1,6 @@
 docker-up:
 		$(DOCKER) compose -p $(PROJECT) --env-file ./config/.env.docker -f ./config/compose.yaml up -d
+		@$(DOCKER) ps
 
 docker-down:
 		$(DOCKER) compose -p $(PROJECT) -f ./config/compose.yaml down

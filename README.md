@@ -67,3 +67,19 @@ make exec
 ```
 
 This target runs the main class of the project using the `JAR` file created by the build target, as well as the classpath of the`$(DIST)` directory and all JAR files in the `$(LIB)` directory.
+
+
+## Docker commands
+
+```bash
+make docker-up
+```
+
+This target builds the Docker image and runs the PostgreSQL and pgAdmin containers.
+
+```bash
+make docker-down
+```
+
+This target stops and removes the PostgreSQL and pgAdmin containers.
+
