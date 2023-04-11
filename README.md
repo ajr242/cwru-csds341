@@ -1,26 +1,40 @@
-# Java Project Template
+# JDBC Data Access Object (DAO) Pattern
 
 This is a template for a Java project using the [Makefile](https://www.gnu.org/software/make/) build system.
 
 ## Structure
 
 ```bash
-src/
-├── main
-│   ├── java
-│   │   └── com
-│   │       └── pokeverse
-│   │           └── pokemon
-│   │               └── App.java
-│   └── resources
-│       └── db.properties
-└── test
-    └── java
-        └── com
-            └── pokeverse
-                └── pokemon
-                    └── AppTest.java
+main
+├── java
+│   └── com
+│       └── cwru
+│           └── pokeverse
+│               ├── App.java
+│               ├── dao
+│               │   ├── abstraction
+│               │   │   ├── CRUD.java
+│               │   │   └── PokemonDAO.java
+│               │   └── implementation
+│               │       └── PokemonImp.java
+│               ├── models
+│               │   └── Pokemon.java
+│               └── utils
+│                   ├── DatabaseConnection.java
+│                   └── InitDatabase.java
+└── resources
+    └── db.properties
 ```
+
+## Dependencies
+
+- [Java](https://www.java.com/en/download/)
+- [Make](https://www.gnu.org/software/make/)
+- [JDBC](https://www.oracle.com/technetwork/java/javase/jdbc/index.html)
+- [PostgreSQL](https://www.postgresql.org/)
+- [PostgreSQL JDBC Driver](https://jdbc.postgresql.org/)
+- [commons-dbcp2](https://commons.apache.org/proper/commons-dbcp/)
+
 
 ## Makefile commands
 
