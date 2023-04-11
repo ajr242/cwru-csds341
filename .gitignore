@@ -6,3 +6,7 @@ build/
 # Ignore package files
 *.jar
 *.war
+
+!lib/*.jar
+
+!App.jar
