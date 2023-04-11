@@ -1,2 +1,8 @@
-target/com/pokeverse/pokemon/AppTest.class
-target/com/pokeverse/pokemon/App.class
+target/com/cwru/pokeverse/dao/implementation/PokemonImp.class
+target/com/cwru/pokeverse/dao/abstraction/PokemonDAO.class
+target/com/cwru/pokeverse/dao/abstraction/CRUD.class
+target/com/cwru/pokeverse/AppTest.class
+target/com/cwru/pokeverse/App.class
+target/com/cwru/pokeverse/models/Pokemon.class
+target/com/cwru/pokeverse/utils/DatabaseConnection.class
+target/com/cwru/pokeverse/utils/InitDatabase.class

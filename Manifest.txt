@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: com.pokeverse.pokemon.App
+Main-Class: com.cwru.pokeverse.App

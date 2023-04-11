@@ -1,2 +1,8 @@
-src/test/java/com/pokeverse/pokemon/AppTest.java
-src/main/java/com/pokeverse/pokemon/App.java
+src/test/java/com/cwru/pokeverse/AppTest.java
+src/main/java/com/cwru/pokeverse/dao/implementation/PokemonImp.java
+src/main/java/com/cwru/pokeverse/dao/abstraction/CRUD.java
+src/main/java/com/cwru/pokeverse/dao/abstraction/PokemonDAO.java
+src/main/java/com/cwru/pokeverse/models/Pokemon.java
+src/main/java/com/cwru/pokeverse/App.java
+src/main/java/com/cwru/pokeverse/utils/DatabaseConnection.java
+src/main/java/com/cwru/pokeverse/utils/InitDatabase.java
