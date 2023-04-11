@@ -1,4 +1,4 @@
-package com.pokeverse.pokemon;
+package com.cwru.pokeverse;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

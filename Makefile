@@ -25,8 +25,8 @@ DIST = target
 LIB = lib
 
 COMPANY = com
-PROJECT = pokeverse
-PACKAGE = pokemon
+PROJECT = cwru
+PACKAGE = pokeverse
 
 FPN = $(COMPANY).$(PROJECT).$(PACKAGE)
 
