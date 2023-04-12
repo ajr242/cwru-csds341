@@ -36,7 +36,12 @@ main
 - [commons-dbcp2](https://commons.apache.org/proper/commons-dbcp/)
 
 
-## Makefile commands
+## Build System
+
+The build process can be done either by using Makefile or Maven.
+To use Makefile follow the instructions below, otherwise skip to the Maven section.
+
+### Makefile commands
 
 ```bash
 make source
@@ -67,6 +72,12 @@ make exec
 ```
 
 This target runs the main class of the project using the `JAR` file created by the build target, as well as the classpath of the`$(DIST)` directory and all JAR files in the `$(LIB)` directory.
+
+### Maven commands
+
+```bash
+mvn compile
+```
 
 
 ## Docker commands

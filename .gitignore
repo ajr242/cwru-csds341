@@ -13,3 +13,5 @@ build/
 
 # Ignore Docker volumes
 config/volumes
+
+*_local*
