@@ -1,6 +1,5 @@
 # JDBC (Java Database Connectivity)
 
-Here is a table of contents for this document:
 
 - [JDBC (Java Database Connectivity)](#jdbc-java-database-connectivity)
   - [JDBC Architecture](#jdbc-architecture)
@@ -22,14 +21,7 @@ Here is a table of contents for this document:
     - [ResultSet](#resultset)
       - [ResultSetMetaData](#resultsetmetadata)
       - [ResultSet](#resultset-1)
-  - [DriverManager](#drivermanager)
-  - [Connection](#connection)
-  - [Driver](#driver)
-  - [DataSource](#datasource)
-  - [Transaction](#transaction)
-  - [SQL Injection](#sql-injection)
-  - [References](#references)
-
+ 
 ## JDBC Architecture
 
 - JDBC is a Java API that provides a set of classes and interfaces to perform database operations.
@@ -127,9 +119,6 @@ In this example, we use a PreparedStatement to execute the same SQL query as bef
 ### CallableStatement 
 
 - Main features of CallableStatement are:
-  1. It is used to execute stored procedures.
-  2. It is used to execute functions.
-  3. It is used to execute database-specific operations.
 
 - Used to execute stored procedures that might contain both input and output parameters.
 
@@ -159,8 +148,6 @@ SELECT name INTO ename FROM employee WHERE id = empid;
 RETURN ename;
 END
 ```
-
-
 
 
 
@@ -220,12 +207,6 @@ In this example, we use a CallableStatement to call a stored procedure named "ge
 
 - It includes the SQL commands such as `CREATE`, `ALTER`, `DROP`, `TRUNCATE` etc.
 
-- DDL statements are used to create and modify the structure of database objects in the database.
-
-- DDL statements are used to create and drop the tables in the database.
-
-- DDL statements are used to create and drop various views in the database.
-
 examples
 
 CREATE TABLE
@@ -264,9 +245,6 @@ TRUNCATE TABLE EMPLOYEE;
 
 - It includes the SQL commands such as `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `CALL`, `EXPLAIN PLAN`, `LOCK TABLE` etc.
 
-- DML statements are used to insert records in a table.
-
-- DML statements are used to update records in a table.
 
 examples
 
@@ -330,10 +308,6 @@ LOCK TABLE EMPLOYEE IN EXCLUSIVE MODE;
 
 - It includes the SQL commands such as `GRANT`, `REVOKE` etc.
 
-- DCL statements are used to provide permissions to the users for various operations on the tables, views, and other database objects.
-
-- DCL statements are used to revoke the permissions given to the users.
-
 examples
 
 GRANT
@@ -360,7 +334,6 @@ FROM 'user1';
 
 - TCL statements are used to manage transactions.
 
-- TCL statements are used to set the transaction properties.
 
 examples
 
@@ -393,8 +366,6 @@ SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 - DRL is used to retrieve the data from the database.
 
 - It includes the SQL commands such as `SELECT` etc.
-
-- DRL statements are used to retrieve data from one or more tables.
 
 examples
 
@@ -456,22 +427,13 @@ example:
 int rowCount = stmt.executeUpdate("INSERT INTO EMPLOYEES VALUES (100, 'John', 'Doe')");
 ```
 
-source : https://docs.oracle.com/javase/tutorial/jdbc/basics/processingsqlstatements.html
+[2](https://docs.oracle.com/javase/tutorial/jdbc/basics/processingsqlstatements.html)
 
 ## ResultSet
 
 - A ResultSet can have different functionalities and characteristics depending on the type of SQL statement that was used to create it.
 
-- The characteristics are type, concurrency, and holdability.
-
 - The type of a ResultSet object determines whether it is scrollable or not.
-
-- The concurrency of a ResultSet object determines whether it is updatable or not.
-
-- The holdability of a ResultSet object determines whether it is closed when the Statement object that generated it is closed.
-
-
-
 
 - A ResultSet object maintains a cursor that points to its current row of data. 
 
@@ -503,32 +465,12 @@ while (rs.next()) {
 }
 ```
 
-
-
 - To retrieve the data from the ResultSet object, you use the getXXX methods, where XXX is the data type of the column.
-
 
 - The getXXX methods retrieve column values from the current row. You can retrieve values either using the index number of the column or the name of the column. In general using the column index will be more efficient. Columns are numbered from 1.
 
 - The getXXX methods throw a SQLException if the column type is an SQL NULL. So you should use try-catch block to handle the exception.
 
-
-### ResultSet Types
-
-- ResultSet.TYPE_FORWARD_ONLY: This type of ResultSet object can only be scrolled in the forward direction.
-
-
-
-example:
-
-```java
-ResultSet rs = stmt.executeQuery("SELECT * FROM EMPLOYEES");
-while (rs.next()) {
-    int id = rs.getInt("id");
-    String firstName = rs.getString("first_name");
-    String lastName = rs.getString("last_name");
-}
-```
 
 For more information check [here](https://docs.oracle.com/javase/tutorial/jdbc/basics/retrieving.html).
 
@@ -540,8 +482,6 @@ For more information check [here](https://docs.oracle.com/javase/tutorial/jdbc/b
 ## Trigger in SQL
 
 - A trigger is a special type of stored procedure that is automatically executed when a specified event occurs in the database.
-
-- A trigger is a database object that is associated with a table and is automatically executed when a specified event occurs.
 
 Some examples of events that can trigger a trigger are:
 
@@ -605,8 +545,6 @@ DROP TRIGGER trigger_name;
 ### Trigger Body
 
 - The trigger body is the code that is executed when the trigger is fired.
-
-- The trigger body can contain any valid SQL statement.
 
 - The trigger body can contain SQL statements that modify the data in the table that the trigger is associated with.
 
