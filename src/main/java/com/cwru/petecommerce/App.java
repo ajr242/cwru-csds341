@@ -4,9 +4,18 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import com.cwru.petecommerce.dao.abstraction.PokemonDAO;
-import com.cwru.petecommerce.dao.implementation.PokemonImp;
-import com.cwru.petecommerce.models.Pokemon;
+import com.cwru.petecommerce.dao.abstraction.CRUD;
+import com.cwru.petecommerce.dao.implementation.ProductImp;
+
+import com.cwru.petecommerce.models.Cart;
+import com.cwru.petecommerce.models.Category;
+import com.cwru.petecommerce.models.Customer;
+import com.cwru.petecommerce.models.Product;
+import com.cwru.petecommerce.models.Purchase;
+import com.cwru.petecommerce.models.PurchaseProduct;
+import com.cwru.petecommerce.models.Review;
+import com.cwru.petecommerce.models.Seller;
+
 import com.cwru.petecommerce.utils.InitDatabase;
 
 public class App {
@@ -15,7 +24,7 @@ public class App {
 
         try {
             initDB();
-            //insertPokemon();
+            insertProduct();
             //retrieveById();
             //retrieveAll();
             //update();
@@ -84,18 +93,18 @@ public class App {
         }
     }
 
-    private static void insertPokemon() throws SQLException {
+    private static void insertProduct() throws SQLException {
 
-        Pokemon pokemon = new Pokemon(1,  "pikachu", "Fire", 13.2f);
+        Product dogFood = new Product(0, null, "Dog Food", "Yummy", null, 10000, 2);
 
-        PokemonDAO pokemonImp = new PokemonImp();
+        CRUD<Product> productImp = new ProductImp();
 
-        int result = pokemonImp.create(pokemon);
+        int result = productImp.create(dogFood);
 
         System.out.println(result);
     }
 
-    private static void retrieveById() throws SQLException {
+    /* private static void retrieveById() throws SQLException {
         PokemonImp pokemonImp = new PokemonImp();
 
         Optional<Pokemon> optionalPokemon = pokemonImp.getById(32);
@@ -146,6 +155,6 @@ public class App {
         for (Pokemon pokemon : pokemons) {
             System.out.println(pokemon);
         }
-    }
+    } */
 
 }

@@ -2,14 +2,14 @@ package com.cwru.petecommerce.models;
 
 public class Product {
     private int id;
-    private int sellerID;
+    private Integer sellerID;
     private String name;
     private String description;
-    private int categoryID;
+    private Integer categoryID;
     private int price;
     private int stock;
     
-    public Product(int id, int sellerID, String name, String description, int categoryID, int price, int stock) {
+    public Product(int id, Integer sellerID, String name, String description, Integer categoryID, int price, int stock) {
         this.id = id;
         this.sellerID = sellerID;
         this.name = name;
@@ -25,11 +25,11 @@ public class Product {
         return id;
     }
 
-    public int getSellerID() {
+    public Integer getSellerID() {
         return sellerID;
     }
 
-    public void setSellerID(int sellerID) {
+    public void setSellerID(Integer sellerID) {
         this.sellerID = sellerID;
     }
 
@@ -49,11 +49,11 @@ public class Product {
         this.description = description;
     }
 
-    public int getCategoryID() {
+    public Integer getCategoryID() {
         return categoryID;
     }
 
-    public void setCategoryID(int categoryID) {
+    public void setCategoryID(Integer categoryID) {
         this.categoryID = categoryID;
     }
 
