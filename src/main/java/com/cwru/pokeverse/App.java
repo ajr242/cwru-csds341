@@ -14,12 +14,12 @@ public class App {
         System.out.println("Let's go!");
 
         try {
-            // initDB();
-            // insertPokemon();
-            // retrieveById();
-            // retrieveAll();
-            // update();
-            // delete();
+            initDB();
+            insertPokemon();
+            retrieveById();
+            retrieveAll();
+            update();
+            delete();
             retrieveByCategory();
         } catch (Exception e) {
             e.printStackTrace();
@@ -30,7 +30,10 @@ public class App {
 
         InitDatabase initDatabase = new InitDatabase();
 
-        String query = "CREATE TABLE IF NOT EXISTS pokemon ( id SERIAL PRIMARY KEY,name VARCHAR(255),category VARCHAR(255),weight FLOAT)";
+        String query = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pokemon' AND xtype='U') " 
+             + "BEGIN " 
+             + "CREATE TABLE pokemon (id INT IDENTITY(1,1) PRIMARY KEY, name VARCHAR(255), category VARCHAR(255), weight FLOAT) "
+             + "END";
 
         try {
             initDatabase.createTable(query);
