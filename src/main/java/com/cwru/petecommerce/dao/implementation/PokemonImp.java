@@ -1,4 +1,4 @@
-package com.cwru.pokeverse.dao.implementation;
+package com.cwru.petecommerce.dao.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.cwru.pokeverse.dao.abstraction.PokemonDAO;
-import com.cwru.pokeverse.models.Pokemon;
-import com.cwru.pokeverse.utils.DatabaseConnection;
+import com.cwru.petecommerce.dao.abstraction.PokemonDAO;
+import com.cwru.petecommerce.models.Pokemon;
+import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class PokemonImp implements PokemonDAO {
 

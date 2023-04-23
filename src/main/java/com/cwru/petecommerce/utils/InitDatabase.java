@@ -1,4 +1,4 @@
-package com.cwru.pokeverse.utils;
+package com.cwru.petecommerce.utils;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package com.cwru.pokeverse.models;
+package com.cwru.petecommerce.models;
 
 public class Pokemon {
     private int id;

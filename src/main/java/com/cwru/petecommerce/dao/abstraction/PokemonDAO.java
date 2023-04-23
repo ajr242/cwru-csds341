@@ -1,9 +1,9 @@
-package com.cwru.pokeverse.dao.abstraction;
+package com.cwru.petecommerce.dao.abstraction;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import com.cwru.pokeverse.models.Pokemon;
+import com.cwru.petecommerce.models.Pokemon;
 
 public interface PokemonDAO extends CRUD<Pokemon> {
     // // Create
