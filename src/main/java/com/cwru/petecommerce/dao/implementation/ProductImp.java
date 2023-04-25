@@ -144,11 +144,22 @@ public class ProductImp implements CRUD<Product>{
                 PreparedStatement pstmt = connection.prepareStatement(query);
     
         ) {
-    
-            pstmt.setInt(1, product.getSellerID());
+            if (product.getSellerID() != null) {
+                pstmt.setInt(1, Integer.valueOf(product.getSellerID()));
+            } else {
+                pstmt.setNull(1, Types.INTEGER);
+            }
+
+            if (product.getCategoryID() != null) {
+                pstmt.setInt(4, Integer.valueOf(product.getCategoryID()));
+            } else {
+                pstmt.setNull(4, Types.INTEGER);
+            }
+
+            //pstmt.setInt(1, product.getSellerID());
             pstmt.setString(2, product.getName());
             pstmt.setString(3, product.getDescription());
-            pstmt.setInt(4, product.getCategoryID());
+            //pstmt.setInt(4, product.getCategoryID());
             pstmt.setInt(5, product.getPrice());
             pstmt.setInt(6, product.getStock());
             pstmt.setInt(7, id);

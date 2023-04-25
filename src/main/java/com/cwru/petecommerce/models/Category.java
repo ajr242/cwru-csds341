@@ -3,9 +3,9 @@ package com.cwru.petecommerce.models;
 public class Category {
     private int id;
     private String name;
-    private int parentCatID;
+    private Integer parentCatID;
     
-    public Category(int id, String name, int parentCatID) {
+    public Category(int id, String name, Integer parentCatID) {
         this.id = id;
         this.name = name;
         this.parentCatID = parentCatID;
@@ -29,11 +29,11 @@ public class Category {
         this.name = name;
     }
     
-    public int getParentCatID() {
+    public Integer getParentCatID() {
         return parentCatID;
     }
     
-    public void setParentCatID(int parentCatID) {
+    public void setParentCatID(Integer parentCatID) {
         this.parentCatID = parentCatID;
     }
     
