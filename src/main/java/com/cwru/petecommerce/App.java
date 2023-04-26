@@ -3,6 +3,7 @@ package com.cwru.petecommerce;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner; 
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.dao.implementation.ProductImp;
@@ -25,6 +26,7 @@ public class App {
         try {
             initDB();
             insertProduct();
+            insertProductUI();
             //retrieveById();
             //retrieveAll();
             //update();
@@ -101,6 +103,31 @@ public class App {
 
         int result = productImp.create(dogFood);
 
+        System.out.println(result);
+    }
+
+    private static void insertProductUI() throws SQLException {
+        Scanner myObj = new Scanner(System.in);
+        String productName, productDescrip;
+        int sellerID, categoryID, price, stock;
+        
+        // Enter username and press Enter
+       System.out.println("Enter product name then enter. "); 
+       productName = myObj.nextLine();   
+       System.out.println("Enter product description then enter.");
+       productDescrip = myObj.nextLine();
+       System.out.println("Enter sellerID and 0 if none. "); 
+       sellerID = myObj.nextInt();
+       System.out.println("Enter categoryID and 0 if none. "); 
+       categoryID = myObj.nextInt();
+       System.out.println("Enter price with no decimal. "); 
+       price = myObj.nextInt();
+       System.out.println("Enter stock quantity. "); 
+       stock = myObj.nextInt();
+       
+       Product x = new Product(0, sellerID, productName, productDescrip, categoryID, price, stock);
+        CRUD<Product> productImp = new ProductImp();
+        int result = productImp.create(x);
         System.out.println(result);
     }
 
