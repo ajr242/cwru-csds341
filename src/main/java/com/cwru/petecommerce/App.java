@@ -95,6 +95,8 @@ public class App {
         }
     }
 
+
+    // Methods for Product
     private static void insertProduct() throws SQLException {
 
         Product dogFood = new Product(0, null, "Dog Food", "Yummy", null, 10000, 2);
@@ -131,31 +133,32 @@ public class App {
         System.out.println(result);
     }
 
-    /* private static void retrieveById() throws SQLException {
-        PokemonImp pokemonImp = new PokemonImp();
+    private static void retrieveProductById() throws SQLException {
+        ProductImp productImp = new ProductImp();
 
-        Optional<Pokemon> optionalPokemon = pokemonImp.getById(32);
+        Optional<Product> optionalProduct = productImp.getById(32);
 
-        if (optionalPokemon.isPresent()) {
-            System.out.println("Pokemon found");
-            Pokemon pokemon = optionalPokemon.get();
-            System.out.println(pokemon);
+        if (optionalProduct.isPresent()) {
+            System.out.println("Product found");
+            Product product = optionalProduct.get();
+            System.out.println(product);
         } else {
-            System.out.println("Pokemon not found");
+            System.out.println("Product not found");
         }
 
     }
+    
+    private static void retrieveAllProduct() throws SQLException {
+        ProductImp productImp = new ProductImp();
 
-    private static void retrieveAll() throws SQLException {
-        PokemonDAO pokemonImp = new PokemonImp();
+        List<Product> products = productImp.getAll();
 
-        List<Pokemon> pokemons = pokemonImp.getAll();
-
-        for (Pokemon pokemon : pokemons) {
-            System.out.println(pokemon);
+        for (Product product : products) {
+            System.out.println(product);
         }
     }
-
+    
+/* 
     private static void update() throws SQLException {
         Pokemon pokemon = new Pokemon(1, "Pikachur", "Electric", 13.2f);
 
