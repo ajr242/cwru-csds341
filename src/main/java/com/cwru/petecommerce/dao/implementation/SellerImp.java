@@ -43,8 +43,8 @@ public class SellerImp implements CRUD<Seller>{
             // }
 
             //pstmt.setInt(1, product.getSellerID());
-            pstmt.setString(2, seller.getName());
-            pstmt.setString(3, seller.getEmail());
+            pstmt.setString(1, seller.getName());
+            pstmt.setString(2, seller.getEmail());
             //pstmt.setInt(4, product.getCategoryID());
             // pstmt.setInt(5, product.getPrice());
             // pstmt.setInt(6, product.getStock());
@@ -137,7 +137,7 @@ public class SellerImp implements CRUD<Seller>{
     // Update a seller
     @Override
     public int update(int id, Seller seller) throws SQLException {
-        String query = "UPDATE Seller SET name = ?, email = ?";
+        String query = "UPDATE Seller SET name = ?, email = ? WHERE id = ?";
 
         try (
                 Connection connection = DatabaseConnection.getConnection();
@@ -157,12 +157,12 @@ public class SellerImp implements CRUD<Seller>{
             // }
 
             //pstmt.setInt(1, product.getSellerID());
-            pstmt.setString(2, seller.getName());
-            pstmt.setString(3, seller.getEmail());
+            pstmt.setString(1, seller.getName());
+            pstmt.setString(2, seller.getEmail());
             //pstmt.setInt(4, product.getCategoryID());
             // pstmt.setInt(5, product.getPrice());
             // pstmt.setInt(6, product.getStock());
-            // pstmt.setInt(7, id);
+             pstmt.setInt(3, id);
     
             int rowsAffected = pstmt.executeUpdate();
     
