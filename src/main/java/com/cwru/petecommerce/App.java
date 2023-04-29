@@ -2,21 +2,20 @@ package com.cwru.petecommerce;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Date;
 import java.util.Optional;
-import java.util.Scanner; 
+import java.util.Scanner;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
+import com.cwru.petecommerce.dao.abstraction.CRUDComposite;
+import com.cwru.petecommerce.dao.implementation.CartImp;
 import com.cwru.petecommerce.dao.implementation.ProductImp;
-
+import com.cwru.petecommerce.dao.implementation.PurchaseImp;
+import com.cwru.petecommerce.dao.implementation.PurchaseProductImp;
 import com.cwru.petecommerce.models.Cart;
-import com.cwru.petecommerce.models.Category;
-import com.cwru.petecommerce.models.Customer;
 import com.cwru.petecommerce.models.Product;
 import com.cwru.petecommerce.models.Purchase;
 import com.cwru.petecommerce.models.PurchaseProduct;
-import com.cwru.petecommerce.models.Review;
-import com.cwru.petecommerce.models.Seller;
-
 import com.cwru.petecommerce.utils.InitDatabase;
 
 public class App {
@@ -157,6 +156,65 @@ public class App {
             System.out.println(product);
         }
     }
+
+    private static void addToCart(int customerId, int productId, int quantity) throws SQLException {
+        Cart cart = new Cart(customerId, productId, quantity);
+        CRUDComposite<Cart> cartImp = new CartImp();
+        int result = cartImp.create(cart);
+        System.out.println(result); // print the ID of the created cart
+    }
+
+    public void checkout(int customerID, String paymentType) throws SQLException {
+        // get all items in the customer's cart
+        CartImp cartImp = new CartImp();
+        List<Cart> cartItems = cartImp.getAllByCustomerID(customerID);
+        
+        // check if cart is empty
+        if(cartItems.isEmpty()) {
+            System.out.println("Cart is empty");
+            return;
+        }
+        
+        // get current date
+        Date date = new Date();
+        
+        // create new purchase record
+        PurchaseImp purchaseImp = new PurchaseImp();
+        Purchase purchase = new Purchase(0, paymentType, 0, date, customerID, false);
+        int purchaseID = purchaseImp.create(purchase);
+        
+        // insert items into PurchaseProduct table and update product stock
+        ProductImp productImp = new ProductImp();
+        PurchaseProductImp purchaseProductImp = new PurchaseProductImp();
+        int totalAmount = 0;
+        for(Cart cartItem: cartItems) {
+            Optional<Product> optionalProduct = productImp.getById(cartItem.getProductID());
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
+
+                // TODO: Deal with purchases where this is not the case
+                if(product.getStock() >= cartItem.getQuantity()) {
+                    // reduce product stock by cart item quantity
+                    productImp.updateStock(product.getId(), -cartItem.getQuantity());
+        
+                    // insert item into PurchaseProduct table
+                    PurchaseProduct purchaseProduct = new PurchaseProduct(purchaseID, cartItem.getProductID(), product.getPrice(), cartItem.getQuantity());
+                    purchaseProductImp.create(purchaseProduct);
+        
+                    // update total amount
+                    totalAmount += product.getPrice() * cartItem.getQuantity();
+                }
+            }
+        }
+    
+        // update totalAmount in Purchase table
+        purchase.setTotalAmount(totalAmount);
+        purchaseImp.update(purchaseID, purchase);
+        
+        // delete all items in customer's cart
+        cartImp.deleteAllByCustomerID(customerID);
+    }
+    
     
 /* 
     private static void update() throws SQLException {

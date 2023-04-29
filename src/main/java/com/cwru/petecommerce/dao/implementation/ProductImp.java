@@ -234,5 +234,25 @@ public class ProductImp implements CRUD<Product>{
         }
     
     }
+
+    public void updateStock(int id, int stockChange) throws SQLException, IllegalArgumentException {
+        Optional<Product> optionalProduct = getById(id);
+    
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+    
+            int currentStock = product.getStock();
+            int newStock = currentStock + stockChange;
+    
+            if (newStock >= 0) {
+                product.setStock(newStock);
+                update(id, product);
+            } else {
+                throw new IllegalArgumentException("Stock would be less than 0 after the update.");
+            }
+        } else {
+            throw new IllegalArgumentException("Product with id " + id + " does not exist.");
+        }
+    }    
     
 }
