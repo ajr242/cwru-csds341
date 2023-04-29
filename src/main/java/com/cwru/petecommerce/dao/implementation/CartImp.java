@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
-import com.cwru.petecommerce.models.Product;
+import com.cwru.petecommerce.models.Cart;
 import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class CartImp implements CRUD<Cart>{

@@ -1,14 +1,16 @@
 package com.cwru.petecommerce.models;
 
+import java.util.Date;
+
 public class Review {
     private int id;
-    private String date;
+    private Date date;
     private int productID;
     private int customerID;
     private int rating;
     private String description;
 
-    public Review(int id, String date, int productID, int customerID, int rating, String description) {
+    public Review(int id, Date date, int productID, int customerID, int rating, String description) {
         this.id = id;
         this.date = date;
         this.productID = productID;
@@ -28,11 +30,11 @@ public class Review {
         this.id = id;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

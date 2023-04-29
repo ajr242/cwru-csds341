@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
-import com.cwru.petecommerce.models.Product;
+import com.cwru.petecommerce.models.Seller;
 import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class SellerImp implements CRUD<Seller>{
@@ -28,26 +28,8 @@ public class SellerImp implements CRUD<Seller>{
                 PreparedStatement pstmt = connection.prepareStatement(query);
 
         ) {
-            // Integer sellerId = product.getSellerID();
-            // if (sellerId != null) {
-            //     pstmt.setInt(1, Integer.valueOf(sellerId));
-            // } else {
-            //     pstmt.setNull(1, Types.INTEGER);
-            // }
-
-            // Integer categoryId = product.getCategoryID();
-            // if (categoryId != null) {
-            //     pstmt.setInt(4, Integer.valueOf(categoryId));
-            // } else {
-            //     pstmt.setNull(4, Types.INTEGER);
-            // }
-
-            //pstmt.setInt(1, product.getSellerID());
             pstmt.setString(1, seller.getName());
             pstmt.setString(2, seller.getEmail());
-            //pstmt.setInt(4, product.getCategoryID());
-            // pstmt.setInt(5, product.getPrice());
-            // pstmt.setInt(6, product.getStock());
 
             int result = pstmt.executeUpdate();
 
@@ -75,11 +57,7 @@ public class SellerImp implements CRUD<Seller>{
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 int resId = rs.getInt("id");
-                //int sellerID = rs.getInt("sellerID");
                 String name = rs.getString("name");
-                //int price = rs.getInt("price");
-                //int categoryID = rs.getInt("categoryID");
-                //int stock = rs.getInt("stock");
                 String email = rs.getString("email");
 
                 Seller seller = new Seller(resId, name, email);
@@ -114,16 +92,12 @@ public class SellerImp implements CRUD<Seller>{
 
             while (rs.next()) {
                 int id = rs.getInt("id");
-                //int sellerID = rs.getInt("sellerID");
                 String name = rs.getString("name");
-                //int price = rs.getInt("price");
-                //int categoryID = rs.getInt("categoryID");
-                //int stock = rs.getInt("stock");
                 String email = rs.getString("email");
 
                 Seller seller = new Seller(id, name, email);
 
-                products.add(seller);
+                sellers.add(seller);
             }
             return sellers;
 
@@ -144,25 +118,9 @@ public class SellerImp implements CRUD<Seller>{
                 PreparedStatement pstmt = connection.prepareStatement(query);
     
         ) {
-            // if (seller.getSellerID() != null) {
-            //     pstmt.setInt(1, Integer.valueOf(product.getSellerID()));
-            // } else {
-            //     pstmt.setNull(1, Types.INTEGER);
-            // }
-
-            // if (product.getCategoryID() != null) {
-            //     pstmt.setInt(4, Integer.valueOf(product.getCategoryID()));
-            // } else {
-            //     pstmt.setNull(4, Types.INTEGER);
-            // }
-
-            //pstmt.setInt(1, product.getSellerID());
             pstmt.setString(1, seller.getName());
             pstmt.setString(2, seller.getEmail());
-            //pstmt.setInt(4, product.getCategoryID());
-            // pstmt.setInt(5, product.getPrice());
-            // pstmt.setInt(6, product.getStock());
-             pstmt.setInt(3, id);
+            pstmt.setInt(3, id);
     
             int rowsAffected = pstmt.executeUpdate();
     
@@ -196,43 +154,4 @@ public class SellerImp implements CRUD<Seller>{
         }
     
     }
-    
-    // Retrieve all products by seller
-    // public List<Product> getBySeller(int sellerId) throws SQLException {
-    //     String query = "SELECT * FROM Product WHERE seller_id = ?";
-    
-    //     try (
-    //             Connection connection = DatabaseConnection.getConnection();
-    //             PreparedStatement pstmt = connection.prepareStatement(query);
-    
-    //     ) {
-    
-    //         List<Product> products = new ArrayList<>();
-    //         pstmt.setInt(1, sellerId);
-    
-    //         try (ResultSet rs = pstmt.executeQuery()) {
-    //             while (rs.next()) {
-    //                 int id = rs.getInt("id");
-    //                 int sellerID = rs.getInt("sellerID");
-    //                 String name = rs.getString("name");
-    //                 int price = rs.getInt("price");
-    //                 int categoryID = rs.getInt("categoryID");
-    //                 int stock = rs.getInt("stock");
-    //                 String description = rs.getString("description");
-    
-    //                 Product product = new Product(id, sellerID, name, description, categoryID, price, stock);
-    
-    //                 products.add(product);
-    //             }
-    //             return products;
-    
-    //         }
-    
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //         throw e;
-    //     }
-    
-    // }
-    
 }
