@@ -10,7 +10,7 @@ public class Purchase {
     private int customerID;
     private boolean delivered;
     
-    public Purchase(int id, String paymentType, int totalAmount, Date date, String type, int customerID, boolean delivered) {
+    public Purchase(int id, String paymentType, int totalAmount, Date date, int customerID, boolean delivered) {
         this.id = id;
         this.paymentType = paymentType;
         this.totalAmount = totalAmount;
