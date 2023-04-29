@@ -138,5 +138,49 @@ public class CartImp implements CRUDComposite<Cart> {
         }
     
     }
+
+    // Get all items in the cart for a given customer ID
+    public List<Cart> getAllByCustomerID(int customerID) throws SQLException {
+        String query = "SELECT * FROM Cart WHERE customerID = ?";
+
+        try (
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(query);
+        ) {
+            pstmt.setInt(1, customerID);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            List<Cart> cartItems = new ArrayList<>();
+            while (rs.next()) {
+                int productId = rs.getInt("productID");
+                int qty = rs.getInt("quantity");
+                Cart item = new Cart(customerID, productId, qty);
+                cartItems.add(item);
+            }
+            return cartItems;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    // Delete all items in the cart for a given customer ID
+    public int deleteAllByCustomerID(int customerID) throws SQLException {
+        String query = "DELETE FROM Cart WHERE customerID = ?";
+        
+        try (
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(query);
+        ) {
+            pstmt.setInt(1, customerID);
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
 }
 
