@@ -4,60 +4,36 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
-import com.cwru.petecommerce.models.Product;
+import com.cwru.petecommerce.models.Review;
 import com.cwru.petecommerce.utils.DatabaseConnection;
 
-public class ReviewImp implements CRUD<Review>{
+public class ReviewImp implements CRUD<Review> {
 
-    // Create a new Review
+    // Create a new review
     // No need to pass in an id, the database will auto generate one
     @Override
     public int create(Review review) throws SQLException {
-
         String query = "INSERT INTO Review (date, productID, customerID, rating, description) VALUES (?, ?, ?, ?, ?)";
 
         try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(query);
         ) {
-            Integer productID = review.getProductID();
-            if (productId != null) {
-                pstmt.setInt(1, Integer.valueOf(productId));
-            } else {
-                pstmt.setNull(1, Types.INTEGER);
-            }
-
-            Integer customerId = review.getCustomerID();
-            if (customerId != null) {
-                pstmt.setInt(3, Integer.valueOf(customerId));
-            } else {
-                pstmt.setNull(3, Types.INTEGER);
-            }
-
-            Integer rating = review.getRating();
-            if (rating != null) {
-                pstmt.setInt(4, Integer.valueOf(rating));
-            } else {
-                pstmt.setNull(4, Types.INTEGER);
-            }
-
-            //pstmt.setInt(1, product.getSellerID());
-            pstmt.setString(1, review.getDate());
+            pstmt.setTimestamp(1, new java.sql.Timestamp(review.getDate().getTime()));
+            pstmt.setInt(2, review.getProductID());
+            pstmt.setInt(3, review.getCustomerID());
+            pstmt.setInt(4, review.getRating());
             pstmt.setString(5, review.getDescription());
-
 
             int result = pstmt.executeUpdate();
 
             return result;
-
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;
@@ -68,30 +44,29 @@ public class ReviewImp implements CRUD<Review>{
     // If the review does not exist, return an empty Optional
     @Override
     public Optional<Review> getById(int id) throws SQLException {
-
         String query = "SELECT * FROM Review WHERE id = ?";
 
         try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(query);
         ) {
             pstmt.setInt(1, id);
+
             ResultSet rs = pstmt.executeQuery();
+
             if (rs.next()) {
                 int resId = rs.getInt("id");
-                int date = rs.getInt("date");
+                Date date = new Date(rs.getTimestamp("date").getTime());
                 int productID = rs.getInt("productID");
                 int customerID = rs.getInt("customerID");
                 int rating = rs.getInt("rating");
                 String description = rs.getString("description");
 
                 Review review = new Review(resId, date, productID, customerID, rating, description);
-                return Optional.of(product);
+                return Optional.of(review);
             } else {
                 return Optional.empty();
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;
@@ -100,41 +75,34 @@ public class ReviewImp implements CRUD<Review>{
 
     // Retrieve all reviews
     // If there are no reviews, return an empty list
-    // Dangerous, if there are a lot of reviews, this could be a memory hog
-    // Solution: use a cursor, page through the results, or stream the results
     @Override
     public List<Review> getAll() throws SQLException {
-
         String query = "SELECT * FROM Review";
 
         try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-                ResultSet rs = pstmt.executeQuery();
-
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
         ) {
-
             List<Review> reviews = new ArrayList<>();
 
             while (rs.next()) {
-                int resId = rs.getInt("id");
-                int date = rs.getInt("date");
+                int id = rs.getInt("id");
+                Date date = new Date(rs.getTimestamp("date").getTime());
                 int productID = rs.getInt("productID");
                 int customerID = rs.getInt("customerID");
                 int rating = rs.getInt("rating");
                 String description = rs.getString("description");
 
-                Review review = new Review(resId, date, productID, customerID, rating, description);
-
+                Review review = new Review(id, date, productID, customerID, rating, description);
                 reviews.add(review);
             }
-            return reviews;
 
+            return reviews;
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;
         }
-
     }
 
     // Update a review
@@ -147,29 +115,12 @@ public class ReviewImp implements CRUD<Review>{
                 PreparedStatement pstmt = connection.prepareStatement(query);
     
         ) {
-            if (review.getProductID() != null) {
-                pstmt.setInt(2, Integer.valueOf(product.getProductID()));
-            } else {
-                pstmt.setNull(2, Types.INTEGER);
-            }
-
-            if (product.getCustomerID() != null) {
-                pstmt.setInt(3, Integer.valueOf(product.getCustomerID()));
-            } else {
-                pstmt.setNull(3, Types.INTEGER);
-            }
-
-            if (product.getRating() != null) {
-                pstmt.setInt(4, Integer.valueOf(product.getRating()));
-            } else {
-                pstmt.setNull(4, Types.INTEGER);
-            }
-
-            //pstmt.setInt(1, product.getSellerID());
-            pstmt.setString(1, review.getDate());
-            pstmt.setString(5, product.getDescription());
-
-            pstmt.setInt(7, id);
+            pstmt.setTimestamp(1, new java.sql.Timestamp(review.getDate().getTime()));
+            pstmt.setInt(2, review.getProductID());
+            pstmt.setInt(3, review.getCustomerID());
+            pstmt.setInt(4, review.getRating());
+            pstmt.setString(5, review.getDescription());
+            pstmt.setInt(6, review.getId());
     
             int rowsAffected = pstmt.executeUpdate();
     
@@ -198,43 +149,6 @@ public class ReviewImp implements CRUD<Review>{
             return rowsAffected;
     
         } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-    
-    }
-    
-    // Retrieve all reviews by seller
-    public List<Review> getBySeller(int sellerId) throws SQLException {
-        String query = "SELECT * FROM Review WHERE seller_id = ?";
-    
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
-    
-            List<Review> reviews = new ArrayList<>();
-            pstmt.setInt(1, sellerId);
-    
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    int resId = rs.getInt("id");
-                    int date = rs.getInt("date");
-                    int productID = rs.getInt("productID");
-                    int customerID = rs.getInt("customerID");
-                    int rating = rs.getInt("rating");
-                    String description = rs.getString("description");
-    
-                    Review review = new Review(resId, date, productID, customerID, rating, description);
-    
-                    reviews.add(review);
-                }
-                return reviews;
-    
-            }
-    
-        } catch (SQLException e) {
             e.printStackTrace();
             throw e;
         }
