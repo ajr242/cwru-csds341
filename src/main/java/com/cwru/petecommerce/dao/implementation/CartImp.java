@@ -10,19 +10,21 @@ import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUDComposite;
 import com.cwru.petecommerce.models.Cart;
-import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class CartImp implements CRUDComposite<Cart> {
+
+    private final Connection connection;
+
+    public CartImp(Connection connection) {
+        this.connection = connection;
+    }
 
     // Add a product to the cart for a specific customer
     @Override
     public int create(Cart cart) throws SQLException {
         String query = "INSERT INTO Cart (customerID, productID, quantity) VALUES (?, ?, ?)";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, cart.getCustomerID());
             pstmt.setInt(2, cart.getProductID());
             pstmt.setInt(3, cart.getQuantity());
@@ -41,10 +43,7 @@ public class CartImp implements CRUDComposite<Cart> {
     public Optional<Cart> getById(int customerID, int productID) throws SQLException {
         String query = "SELECT * FROM Cart WHERE customerID = ? AND productID = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, customerID);
             pstmt.setInt(2, productID);
 
@@ -71,11 +70,8 @@ public class CartImp implements CRUDComposite<Cart> {
     public List<Cart> getAll() throws SQLException {
         String query = "SELECT * FROM Cart";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-            ResultSet rs = pstmt.executeQuery();
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();) {
             List<Cart> carts = new ArrayList<>();
 
             while (rs.next()) {
@@ -99,10 +95,7 @@ public class CartImp implements CRUDComposite<Cart> {
     public int update(int customerID, int productID, Cart cart) throws SQLException {
         String query = "UPDATE Cart SET quantity = ? WHERE customerID = ? AND productID = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, cart.getQuantity());
             pstmt.setInt(2, customerID);
             pstmt.setInt(3, productID);
@@ -122,11 +115,7 @@ public class CartImp implements CRUDComposite<Cart> {
     
         String query = "DELETE FROM Cart WHERE customerID = ? AND productID = ?";
     
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, customerID);
             pstmt.setInt(2, productID);
             int rowsAffected = pstmt.executeUpdate();
@@ -143,10 +132,7 @@ public class CartImp implements CRUDComposite<Cart> {
     public List<Cart> getAllByCustomerID(int customerID) throws SQLException {
         String query = "SELECT * FROM Cart WHERE customerID = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, customerID);
 
             ResultSet rs = pstmt.executeQuery();
@@ -169,10 +155,7 @@ public class CartImp implements CRUDComposite<Cart> {
     public int deleteAllByCustomerID(int customerID) throws SQLException {
         String query = "DELETE FROM Cart WHERE customerID = ?";
         
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, customerID);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected;
