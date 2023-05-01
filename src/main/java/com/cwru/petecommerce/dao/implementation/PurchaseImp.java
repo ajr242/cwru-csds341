@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ public class PurchaseImp implements CRUD<Purchase> {
     public int create(Purchase purchase) throws SQLException {
         String query = "INSERT INTO Purchase (paymentType, totalAmount, date, customerID, delivered) VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
             pstmt.setString(1, purchase.getPaymentType());
             pstmt.setInt(2, purchase.getTotalAmount());
             pstmt.setDate(3, new java.sql.Date(purchase.getDate().getTime()));
@@ -34,7 +35,12 @@ public class PurchaseImp implements CRUD<Purchase> {
             pstmt.setBoolean(5, purchase.isDelivered());
 
             int result = pstmt.executeUpdate();
+            ResultSet rs = pstmt.getGeneratedKeys();
 
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+    
             return result;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -106,7 +112,7 @@ public class PurchaseImp implements CRUD<Purchase> {
     // Update a purchase
     @Override
     public int update(int id, Purchase purchase) throws SQLException {
-        String query = "UPDATE Purchase SET paymentType = ?, totalAmount = ?, date = ?, customerID = ?, delivered = ?, WHERE id = ?";
+        String query = "UPDATE Purchase SET paymentType = ?, totalAmount = ?, date = ?, customerID = ?, delivered = ? WHERE id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setString(1, purchase.getPaymentType());
@@ -114,6 +120,7 @@ public class PurchaseImp implements CRUD<Purchase> {
             pstmt.setDate(3, new java.sql.Date(purchase.getDate().getTime()));
             pstmt.setInt(4, purchase.getCustomerID());
             pstmt.setBoolean(5, purchase.isDelivered());
+            pstmt.setInt(6, purchase.getId());
 
             int result = pstmt.executeUpdate();
 
