@@ -36,4 +36,15 @@ public class InitDatabase {
           }
 
      }
+
+     public void createIndex(String query) throws SQLException {
+          try (Statement stmt = connection.createStatement()) {
+               stmt.execute(query);
+               System.out.println("Index created successfully");
+          } catch (SQLException e) {
+               e.printStackTrace();
+               throw e;
+          }
+
+     }
 }

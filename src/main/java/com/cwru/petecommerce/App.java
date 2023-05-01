@@ -81,14 +81,20 @@ public class App {
                 + "BEGIN "
                 + "CREATE TABLE Purchase_Product (purchaseID INT, productID INT, price INT, quantity INT, PRIMARY KEY (purchaseID, productID), FOREIGN KEY (purchaseID) REFERENCES Purchase(id), FOREIGN KEY (productID) REFERENCES Product(id)) "
                 + "END";
-        String catDeleteTrigger =  "CREATE TRIGGER delete_children_categories "
+
+        String catDeleteTrigger = "CREATE TRIGGER delete_children_categories "
                 + "AFTER DELETE ON Cateogry "
                 + "FOR EACH ROW "
                 + "BEGIN "
                 + "DELETE FROM Category"
                 + "WHERE parentCatID = OLD.categoryID; "
                 + "END;";
-
+        
+        String reviewTableRatingIndex = "CREATE INDEX idx_review_rating ON Review(rating)";
+        String productTableSellerIDIndex = "CREATE INDEX idx_product_sellerID ON Product(sellerID)";
+        String productTableCategoryIDIndex = "CREATE INDEX idx_product_categoryID ON Product(categoryID)";
+        String purchaseProductTablePurchaseIDIndex = "CREATE INDEX idx_purchaseproduct_purchaseID ON PurchaseProduct(purchaseID)";
+        
         try {
             initDatabase.createTable(customerTableQuery);
             initDatabase.createTable(categoryTableQuery);
@@ -98,7 +104,14 @@ public class App {
             initDatabase.createTable(purchaseTableQuery);
             initDatabase.createTable(reviewTableQuery);
             initDatabase.createTable(purchaseProductTableQuery);
+
             initDatabase.createTrigger(catDeleteTrigger);
+
+            initDatabase.createIndex(reviewTableRatingIndex);
+            initDatabase.createIndex(productTableSellerIDIndex);
+            initDatabase.createIndex(productTableCategoryIDIndex);
+            initDatabase.createIndex(purchaseProductTablePurchaseIDIndex);
+
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
