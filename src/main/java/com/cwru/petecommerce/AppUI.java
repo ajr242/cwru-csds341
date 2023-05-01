@@ -428,14 +428,20 @@ public class AppUI {
                           connection.setAutoCommit(false); // start the transaction
                           CRUD<Customer> customerImp = new CustomerImp(connection);
                           Optional<Customer> optionalCustomer = customerImp.getById(id);
-    
+                          JFrame readFrame1 = new JFrame("Product Information");
+                          readFrame1.setSize(500, 150);
+                           JPanel formPanel1 = new JPanel();
+                           formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
                           if (optionalCustomer.isPresent()) {
-                              System.out.println("Customer found");
                               Customer customer = optionalCustomer.get();
-                              System.out.println(customer);
+                              JLabel found = new JLabel("Customer found. " + customer);
+                              formPanel1.add(found);
                           } else {
-                              System.out.println("Customer not found");
-                          }
+                            JLabel found = new JLabel("Customer not found");
+                            formPanel1.add(found);
+                        }
+                        readFrame1.add(formPanel1);
+                        readFrame1.setVisible(true);
             
                           connection.commit();
                       } catch (SQLException e) {
@@ -509,15 +515,21 @@ public class AppUI {
                           connection.setAutoCommit(false); // start the transaction
                           CRUD<Product> productImp = new ProductImp(connection);
                           Optional<Product> optionalProduct = productImp.getById(id);
-    
+                          JFrame readFrame1 = new JFrame("Product Information");
+                          readFrame1.setSize(500, 150);
+                           JPanel formPanel1 = new JPanel();
+                           formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
                           if (optionalProduct.isPresent()) {
-                              System.out.println("Product found");
                               Product product = optionalProduct.get();
-                              System.out.println(product);
+                              JLabel found = new JLabel("Product found. " + product);
+                              formPanel1.add(found);
                           } else {
-                              System.out.println("Product not found");
-                          }
-            
+                            JLabel found = new JLabel("Product not found");
+                            formPanel1.add(found);
+                        }
+                        readFrame1.add(formPanel1);
+                        readFrame1.setVisible(true);
+
                           connection.commit();
                       } catch (SQLException e) {
                           if (connection != null) {
@@ -590,19 +602,17 @@ public class AppUI {
                           connection.setAutoCommit(false); // start the transaction
                           CRUD<Seller> sellerImp = new SellerImp(connection);
                           Optional<Seller> optionalSeller = sellerImp.getById(id);
-                          JFrame readSellerFrame1 = new JFrame("Read Seller");
-                         readSellerFrame1.setSize(300, 300);
+                          JFrame readSellerFrame1 = new JFrame("Seller Information");
+                         readSellerFrame1.setSize(500, 150);
                           JPanel formPanel1 = new JPanel();
-                          formPanel1.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+                          formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
                           if (optionalSeller.isPresent()) {                      
                               Seller seller = optionalSeller.get();
                               JLabel sellerFound = new JLabel("Seller found" + seller);
                               formPanel1.add(sellerFound);
-
                           } else {
                               JLabel sellerFound = new JLabel("Seller not found");
                               formPanel1.add(sellerFound);
-
                           }
                           readSellerFrame1.add(formPanel1);
 
@@ -679,14 +689,20 @@ public class AppUI {
                           connection.setAutoCommit(false); // start the transaction
                           CRUD<Category> categoryImp = new CategoryImp(connection);
                           Optional<Category> optionalCategory = categoryImp.getById(id);
-    
+                          JFrame readCatFrame1 = new JFrame("Category Information");
+                          readCatFrame1.setSize(500, 150);
+                           JPanel formPanel1 = new JPanel();
+                           formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
                           if (optionalCategory.isPresent()) {
-                              System.out.println("Category found");
                               Category category = optionalCategory.get();
-                              System.out.println(category);
+                              JLabel found = new JLabel("Category found. " + category);
+                              formPanel1.add(found);
                           } else {
-                              System.out.println("Category not found");
-                          }
+                            JLabel found = new JLabel("Category not found");
+                            formPanel1.add(found);
+                        }
+                        readCatFrame1.add(formPanel1);
+                        readCatFrame1.setVisible(true);
             
                           connection.commit();
                       } catch (SQLException e) {
