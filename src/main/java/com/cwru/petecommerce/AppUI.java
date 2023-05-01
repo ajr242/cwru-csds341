@@ -570,7 +570,7 @@ public class AppUI {
               formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
 
               // Read text fields for the Seller's name and email
-              JLabel idLbl = new JLabel("First Name:");
+              JLabel idLbl = new JLabel("Enter Seller ID:");
               JTextField idTxt = new JTextField(10);
               formPanel.add(idLbl);
               formPanel.add(idTxt);
@@ -590,7 +590,10 @@ public class AppUI {
                           connection.setAutoCommit(false); // start the transaction
                           CRUD<Seller> sellerImp = new SellerImp(connection);
                           Optional<Seller> optionalSeller = sellerImp.getById(id);
+                          JFrame readSellerFrame1 = new JFrame("Read Seller");
+                         readSellerFrame1.setSize(300, 300);
                           JPanel formPanel1 = new JPanel();
+                          formPanel1.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
                           if (optionalSeller.isPresent()) {                      
                               Seller seller = optionalSeller.get();
                               JLabel sellerFound = new JLabel("Seller found" + seller);
@@ -601,7 +604,9 @@ public class AppUI {
                               formPanel1.add(sellerFound);
 
                           }
+                          readSellerFrame1.add(formPanel1);
 
+                          readSellerFrame1.setVisible(true);
                           connection.commit();
                       } catch (SQLException e) {
                           if (connection != null) {
@@ -646,7 +651,7 @@ public class AppUI {
       readCategoryButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
               // Display a new window to read a Category
-              JFrame readCategoryFrame = new JFrame("Read Category");
+              JFrame readCategoryFrame = new JFrame("Enter Category ID");
               readCategoryFrame.setSize(300, 300);
 
               // Create a panel to hold the form elements
