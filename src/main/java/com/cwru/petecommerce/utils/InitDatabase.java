@@ -25,4 +25,15 @@ public class InitDatabase {
                throw e;
           }
      }
+
+     public void createTrigger(String query) throws SQLException {
+          try (Statement stmt = connection.createStatement()) {
+               stmt.execute(query);
+               System.out.println("Trigger created successfully");
+          } catch (SQLException e) {
+               e.printStackTrace();
+               throw e;
+          }
+
+     }
 }

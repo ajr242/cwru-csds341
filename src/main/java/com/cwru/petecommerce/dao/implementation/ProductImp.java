@@ -91,6 +91,34 @@ public class ProductImp implements CRUD<Product>{
         }
     }
 
+    public List<Product> getAllbySellerID(int sellerID) throws SQLException {
+
+        String query = "SELECT * FROM Product WHERE sellerID = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
+            List<Product> products = new ArrayList<>();
+            pstmt.setInt(1, sellerID);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                int categoryID = rs.getInt("categoryID");
+                int stock = rs.getInt("stock");
+                String description = rs.getString("description");
+
+                Product product = new Product(id, sellerID, name, description, categoryID, price, stock);
+
+                products.add(product);
+            }
+            return products;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
     // Retrieve all products
     // If there are no products, return an empty list
     // Dangerous, if there are a lot of products, this could be a memory hog
