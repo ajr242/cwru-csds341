@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Scanner;]
+import java.util.Scanner;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.dao.abstraction.CRUDComposite;
