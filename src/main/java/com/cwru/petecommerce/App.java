@@ -31,7 +31,49 @@ public class App {
             sellers.add(new Seller(0, "Pet Stop", "petstop@gmail.com"));
             insertSellers(sellers);
 
-            //insertProduct();
+            List<Category> categories = new ArrayList<>();
+            categories.add(new Category(1, "Animals", null));
+            categories.add(new Category(2, "Dogs", 1));
+            categories.add(new Category(3, "Cats", 1));
+            categories.add(new Category(4, "Birds", 1));
+            categories.add(new Category(5, "Small Animals", 1));
+            categories.add(new Category(6, "Food", null));
+            categories.add(new Category(7, "Dry Food", 6));
+            categories.add(new Category(8, "Wet Food", 6));
+            categories.add(new Category(9, "Treats", 6));
+            categories.add(new Category(10, "Accessories", null));
+            categories.add(new Category(11, "Collars", 10));
+            categories.add(new Category(12, "Leashes", 10));
+            categories.add(new Category(13, "Toys", 10));
+            categories.add(new Category(14, "Grooming", null));
+            categories.add(new Category(15, "Shampoo", 14));
+            categories.add(new Category(16, "Conditioner", 14));
+            categories.add(new Category(17, "Brushes", 14));
+            insertCategories(categories);
+
+            List<Product> products = new ArrayList<>();
+            products.add(new Product(1, 1, "Pedigree Dry Dog Food", "Pedigree Dry Dog Food with Real Chicken, 10kg Pack", 7, 2499, 100));
+            products.add(new Product(2, 1, "Royal Canin Wet Dog Food", "Royal Canin Wet Dog Food for Adult Dogs, Pack of 12 Cans, 400g each", 8, 1099, 50));
+            products.add(new Product(3, 2, "Whiskas Dry Cat Food", "Whiskas Dry Cat Food with Real Tuna, 7kg Pack", 9, 1799, 75));
+            products.add(new Product(4, 2, "Fancy Feast Wet Cat Food", "Fancy Feast Wet Cat Food for Adult Cats, Pack of 24 Cans, 85g each", 9, 2999, 25));
+            products.add(new Product(5, 3, "ZuPreem FruitBlend Parrot Food", "ZuPreem FruitBlend Parrot Food with Natural Fruit Flavors, 2.25kg Pack", 4, 1999, 30));
+            products.add(new Product(6, 3, "Kaytee Forti-Diet Canary Food", "Kaytee Forti-Diet Canary Food with Omega-3, 2lb Pack", 4, 799, 50));
+            products.add(new Product(7, 4, "Oxbow Animal Health Hay", "Oxbow Animal Health Hay for Rabbits, Guinea Pigs, Chinchillas, 1kg Pack", 5, 999, 60));
+            products.add(new Product(8, 4, "Living World Timothy Hay", "Living World Timothy Hay for Small Animals, 1kg Pack", 5, 899, 40));
+            products.add(new Product(9, 5, "Bayer K9 Advantix II", "Bayer K9 Advantix II for Medium Dogs, 4-Month Supply", 2, 3999, 20));
+            products.add(new Product(10, 5, "Hartz UltraGuard Flea & Tick Collar", "Hartz UltraGuard Flea & Tick Collar for Cats and Kittens", 11, 299, 100));
+            products.add(new Product(11, 1, "Pedigree Chicken Gravy", "Pedigree Chicken Gravy for Dogs, Pack of 15 Pouches, 80g each", 2, 549, 80));
+            products.add(new Product(12, 1, "Me-O Cat Food", "Me-O Cat Food with Tuna and Chicken, 7kg Pack", 3, 1499, 60));
+            products.add(new Product(13, 2, "Hikari Cichlid Gold Fish Food", "Hikari Cichlid Gold Fish Food, Mini Pellets, 250g Pack", 6, 1099, 30));
+            products.add(new Product(14, 2, "TetraMin Tropical Flakes", "TetraMin Tropical Flakes for Fish, 200g Pack", 6, 899, 50));
+            products.add(new Product(15, 3, "Zilla Reptile Munchies", "Zilla Reptile Munchies, Omnivore Mix, 113g Pack", 12, 499, 120));
+            products.add(new Product(16, 3, "Zoo Med Repti Basking Spot Lamp", "Zoo Med Repti Basking Spot Lamp, 100W", 10, 1299, 25));
+            products.add(new Product(17, 4, "Marshall Ferret Harness", "Marshall Ferret Harness with Bell, Red", 13, 699, 50));
+            products.add(new Product(18, 4, "Tetrafauna ReptoHeat Basking Heater", "Tetrafauna ReptoHeat Basking Heater, 50W", 7, 1999, 20));
+            products.add(new Product(19, 5, "KONG Classic Dog Toy", "KONG Classic Dog Toy, Red, Large", 13, 1299, 40));
+            products.add(new Product(20, 5, "Hartz DuraPlay Ball", "Hartz DuraPlay Ball for Dogs, Large", 13, 799, 60));
+            insertProducts(products);
+
             //insertProductUI();
             //retrieveById();
             //retrieveAll();
@@ -153,22 +195,24 @@ public class App {
         }
     }
 
-    // Methods for Product
-    private static void insertProduct() throws SQLException {
+    private static void insertCategories(List<Category> categories) throws SQLException {
         Connection connection = null;
         try {
             connection = DatabaseConnection.getConnection(); // get the database connection
             connection.setAutoCommit(false); // start the transaction
-            
-            // create the cart
-            Product dogFood = new Product(0, null, "Dog Food", "Yummy", null, 10000, 2);
-
-            CRUD<Product> productImp = new ProductImp(connection);
     
-            int result = productImp.create(dogFood);
+            CRUD<Category> categoryImp = new CategoryImp(connection);
     
-            System.out.println(result);
-            
+            int totalInserted = 0;
+    
+            // create sellers and add them to the database
+            for (Category category : categories) {
+                int result = categoryImp.create(category);
+                totalInserted += result;
+            }
+    
+            System.out.println("Inserted " + totalInserted + " category(s).");
+    
             connection.commit(); // commit the transaction
         } catch (SQLException e) {
             if (connection != null) {
@@ -182,35 +226,24 @@ public class App {
         }
     }
 
-    private static void insertProductUI() throws SQLException {
+    private static void insertProducts(List<Product> products) throws SQLException {
         Connection connection = null;
-        Scanner myObj = new Scanner(System.in);
         try {
             connection = DatabaseConnection.getConnection(); // get the database connection
             connection.setAutoCommit(false); // start the transaction
-            
-                        String productName, productDescrip;
-            int sellerID, categoryID, price, stock;
-            
-            // Enter username and press Enter
-            System.out.println("Enter product name then enter. "); 
-            productName = myObj.nextLine();   
-            System.out.println("Enter product description then enter.");
-            productDescrip = myObj.nextLine();
-            System.out.println("Enter sellerID and 0 if none. "); 
-            sellerID = myObj.nextInt();
-            System.out.println("Enter categoryID and 0 if none. "); 
-            categoryID = myObj.nextInt();
-            System.out.println("Enter price with no decimal. "); 
-            price = myObj.nextInt();
-            System.out.println("Enter stock quantity. "); 
-            stock = myObj.nextInt();
-            
-            Product x = new Product(0, sellerID, productName, productDescrip, categoryID, price, stock);
+    
             CRUD<Product> productImp = new ProductImp(connection);
-            int result = productImp.create(x);
-            System.out.println(result);
-            
+    
+            int totalInserted = 0;
+    
+            // create sellers and add them to the database
+            for (Product product : products) {
+                int result = productImp.create(product);
+                totalInserted += result;
+            }
+    
+            System.out.println("Inserted " + totalInserted + " products(s).");
+    
             connection.commit(); // commit the transaction
         } catch (SQLException e) {
             if (connection != null) {
@@ -220,10 +253,10 @@ public class App {
         } finally {
             if (connection != null) {
                 connection.close(); // close the connection
-                myObj.close();
             }
         }
     }
+
 
 
     private static void retrieveProductById() throws SQLException {
