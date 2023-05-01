@@ -20,15 +20,12 @@ public class App {
         System.out.println("Begin");
 
         try {
-            initDB();
-
             List<Seller> sellers = new ArrayList<>();
             sellers.add(new Seller(0, "Pet Palace", "petpalace@gmail.com"));
             sellers.add(new Seller(0, "Pet Paradise", "petparadise@gmail.com"));
             sellers.add(new Seller(0, "Pet World", "petworld@gmail.com"));
             sellers.add(new Seller(0, "Pet Central", "petcentral@gmail.com"));
             sellers.add(new Seller(0, "Pet Stop", "petstop@gmail.com"));
-            insertSellers(sellers);
 
             List<Category> categories = new ArrayList<>();
             categories.add(new Category(1, "Animals", null));
@@ -48,7 +45,6 @@ public class App {
             categories.add(new Category(15, "Shampoo", 14));
             categories.add(new Category(16, "Conditioner", 14));
             categories.add(new Category(17, "Brushes", 14));
-            insertCategories(categories);
 
             List<Product> products = new ArrayList<>();
             products.add(new Product(1, 1, "Pedigree Dry Dog Food", "Pedigree Dry Dog Food with Real Chicken, 10kg Pack", 7, 2499, 100));
@@ -71,7 +67,6 @@ public class App {
             products.add(new Product(18, 4, "Tetrafauna ReptoHeat Basking Heater", "Tetrafauna ReptoHeat Basking Heater, 50W", 7, 1999, 20));
             products.add(new Product(19, 5, "KONG Classic Dog Toy", "KONG Classic Dog Toy, Red, Large", 13, 1299, 40));
             products.add(new Product(20, 5, "Hartz DuraPlay Ball", "Hartz DuraPlay Ball for Dogs, Large", 13, 799, 60));
-            insertProducts(products);
 
             List<Customer> customers = new ArrayList<>();
             customers.add(new Customer(1, "John", "Doe", "johndoe@gmail.com", "hjk7$g@1", "123 Main St, Anytown USA"));
@@ -84,7 +79,6 @@ public class App {
             customers.add(new Customer(8, "Emily", "Wilson", "emilywilson@yahoo.com", "efg4!h$7", "135 Maple St, Anystate USA"));
             customers.add(new Customer(9, "James", "Miller", "jamesmiller@gmail.com", "nop8*r$3", "864 Pine St, Anyville USA"));
             customers.add(new Customer(10, "Sarah", "Taylor", "sarahtaylor@yahoo.com", "ijk2#l$9", "753 Elm St, Anymetropolis USA"));
-            insertCustomers(customers);
 
             List<Review> reviews = new ArrayList<>();
             reviews.add(new Review(1, new Date(), 1, 1, 4, "Great product, my cat loves it!"));
@@ -107,7 +101,6 @@ public class App {
             reviews.add(new Review(18, new Date(), 8, 9, 5, "Very satisfied with my purchase!"));
             reviews.add(new Review(19, new Date(), 9, 10, 4, "Good product, but could have been packaged better."));
             reviews.add(new Review(20, new Date(), 10, 6, 5, "Love this product and seller!"));
-            insertReviews(reviews);
 
             List<Cart> carts = new ArrayList<>();
             carts.add(new Cart(1, 3, 2));
@@ -120,8 +113,31 @@ public class App {
             carts.add(new Cart(5, 1, 1));
             carts.add(new Cart(5, 4, 2));
             carts.add(new Cart(5, 6, 1));
+            carts.add(new Cart(6, 2, 1));
+            carts.add(new Cart(6, 5, 3));
+            carts.add(new Cart(6, 6, 2));
+            carts.add(new Cart(7, 3, 2));
+            carts.add(new Cart(7, 4, 1));
+            carts.add(new Cart(7, 5, 1));
+            carts.add(new Cart(7, 6, 3));
+            carts.add(new Cart(8, 1, 2));
+            carts.add(new Cart(8, 2, 1));
+            carts.add(new Cart(8, 3, 1));
+            carts.add(new Cart(8, 4, 3));
+            carts.add(new Cart(9, 2, 1));
+            carts.add(new Cart(9, 3, 2));
+            carts.add(new Cart(9, 5, 1));
+            carts.add(new Cart(10, 1, 3));
+            carts.add(new Cart(10, 4, 1));
+            carts.add(new Cart(10, 6, 2));
+
+            initDB();
+            insertSellers(sellers);
+            insertCategories(categories);
+            insertProducts(products);
+            insertCustomers(customers);
+            insertReviews(reviews);
             insertCarts(carts);
-            //insertProductUI();
             //retrieveById();
             //retrieveAll();
             //update();
