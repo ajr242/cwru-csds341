@@ -1116,7 +1116,296 @@ public class AppUI {
       panel.add(updateCategoryButton);
 
 
-
+       //Delete Customer
+       JButton deleteCustomerButton = new JButton("Delete Customer");
+       deleteCustomerButton.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+               // Display a new window to delete a Customer
+               JFrame deleteCustomerFrame = new JFrame("Delete Customer");
+               deleteCustomerFrame.setSize(300, 300);
+ 
+               // Create a panel to hold the form elements
+               JPanel formPanel = new JPanel();
+               formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+ 
+               // Delete text fields for the Customer's name and email
+               JLabel idLbl = new JLabel("Insert Customer ID:");
+               JTextField idTxt = new JTextField(10);
+               formPanel.add(idLbl);
+               formPanel.add(idTxt);
+ 
+               // Delete a button to submit the form
+               JButton submitButton = new JButton("Delete Customer");
+               submitButton.addActionListener(new ActionListener() {
+                   public void actionPerformed(ActionEvent a) {
+                       // Get the values from the form fields and delete the Customer to the database
+                       Integer id = Integer.parseInt(idTxt.getText());
+                       
+                       //Delete the Customer to the database
+                       
+                       Connection connection = null;
+                       try {
+                           connection = DatabaseConnection.getConnection(); // get the database connection
+                           connection.setAutoCommit(false); // start the transaction
+                           CRUD<Customer> customerImp = new CustomerImp(connection);
+                           int result = customerImp.delete(id);
+                           System.out.println(result);
+                           connection.commit();
+                       } catch (SQLException e) {
+                           if (connection != null) {
+                               try {
+                                   connection.rollback();
+                               } catch (SQLException e1) {
+                                   System.out.println("Could not delete new customer nor rollback. See error stack trace.");
+                                   e1.printStackTrace();
+                               } // rollback the transaction if an exception occurs
+                           }
+                           System.out.println("Could not delete new customer. See error stack trace.");
+                           e.printStackTrace();
+                       } finally {
+                           if (connection != null) {
+                               try {
+                                   connection.close(); // close the connection
+                               } catch (SQLException e) {
+                                   System.out.println("Connection could not close. See error stack trace.");
+                                   e.printStackTrace();
+                               } 
+                           }
+                       }
+                       
+                       
+                       // Close the "Delete Customer" window
+                       deleteCustomerFrame.dispose();
+                   }
+               });
+               formPanel.add(submitButton);
+ 
+               // Delete the form panel to the window
+               deleteCustomerFrame.add(formPanel);
+ 
+               deleteCustomerFrame.setVisible(true);
+           }
+       });
+       panel.add(deleteCustomerButton);
+ 
+ 
+       //Delete Product
+       JButton deleteProductButton = new JButton("Delete Product");
+       deleteProductButton.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+               // Display a new window to delete a Product
+               JFrame deleteProductFrame = new JFrame("Delete Product");
+               deleteProductFrame.setSize(300, 300);
+ 
+               // Create a panel to hold the form elements
+               JPanel formPanel = new JPanel();
+               formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+ 
+               // Delete text fields for the Product's name and email
+               JLabel idLbl = new JLabel("Insert product ID:");
+               JTextField idTxt = new JTextField(10);
+               formPanel.add(idLbl);
+               formPanel.add(idTxt);
+ 
+               // Delete a button to submit the form
+               JButton submitButton = new JButton("Delete Product");
+               submitButton.addActionListener(new ActionListener() {
+                   public void actionPerformed(ActionEvent a) {
+                       // Get the values from the form fields and delete the Product to the database
+                       Integer id = Integer.parseInt(idTxt.getText());
+                       
+                       //Delete the Product to the database
+                       
+                       Connection connection = null;
+                       try {
+                           connection = DatabaseConnection.getConnection(); // get the database connection
+                           connection.setAutoCommit(false); // start the transaction
+                           CRUD<Product> productImp = new ProductImp(connection);
+                           int result = productImp.delete(id);
+                          System.out.println(result);
+                           connection.commit();
+                       } catch (SQLException e) {
+                           if (connection != null) {
+                               try {
+                                   connection.rollback();
+                               } catch (SQLException e1) {
+                                   System.out.println("Could not delete new product nor rollback. See error stack trace.");
+                                   e1.printStackTrace();
+                               } // rollback the transaction if an exception occurs
+                           }
+                           System.out.println("Could not delete new product. See error stack trace.");
+                           e.printStackTrace();
+                       } finally {
+                           if (connection != null) {
+                               try {
+                                   connection.close(); // close the connection
+                               } catch (SQLException e) {
+                                   System.out.println("Connection could not close. See error stack trace.");
+                                   e.printStackTrace();
+                               } 
+                           }
+                       }
+                       
+                       
+                       // Close the "Delete Product" window
+                       deleteProductFrame.dispose();
+                   }
+               });
+               formPanel.add(submitButton);
+ 
+               // Delete the form panel to the window
+               deleteProductFrame.add(formPanel);
+ 
+               deleteProductFrame.setVisible(true);
+           }
+       });
+       panel.add(deleteProductButton);
+ 
+ 
+       //Delete Seller
+       JButton deleteSellerButton = new JButton("Delete Seller");
+       deleteSellerButton.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+               // Display a new window to delete a Seller
+               JFrame deleteSellerFrame = new JFrame("Delete Seller");
+               deleteSellerFrame.setSize(300, 300);
+ 
+               // Create a panel to hold the form elements
+               JPanel formPanel = new JPanel();
+               formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+ 
+               // Delete text fields for the Seller's name and email
+               JLabel idLbl = new JLabel("Enter Seller ID:");
+               JTextField idTxt = new JTextField(10);
+               formPanel.add(idLbl);
+               formPanel.add(idTxt);
+ 
+               // Delete a button to submit the form
+               JButton submitButton = new JButton("Delete Seller");
+               submitButton.addActionListener(new ActionListener() {
+                   public void actionPerformed(ActionEvent a) {
+                       // Get the values from the form fields and delete the Seller to the database
+                       Integer id = Integer.parseInt(idTxt.getText());
+                       
+                       //Delete the Seller to the database
+                       
+                       Connection connection = null;
+                       try {
+                           connection = DatabaseConnection.getConnection(); // get the database connection
+                           connection.setAutoCommit(false); // start the transaction
+                           CRUD<Seller> sellerImp = new SellerImp(connection);
+                           int result = sellerImp.delete(id);
+                          System.out.println(result);
+                           connection.commit();
+                       } catch (SQLException e) {
+                           if (connection != null) {
+                               try {
+                                   connection.rollback();
+                               } catch (SQLException e1) {
+                                   System.out.println("Could not delete new seller nor rollback. See error stack trace.");
+                                   e1.printStackTrace();
+                               } // rollback the transaction if an exception occurs
+                           }
+                           System.out.println("Could not delete new seller. See error stack trace.");
+                           e.printStackTrace();
+                       } finally {
+                           if (connection != null) {
+                               try {
+                                   connection.close(); // close the connection
+                               } catch (SQLException e) {
+                                   System.out.println("Connection could not close. See error stack trace.");
+                                   e.printStackTrace();
+                               } 
+                           }
+                       }
+                       
+                       
+                       // Close the "Delete Seller" window
+                       deleteSellerFrame.dispose();
+                   }
+               });
+               formPanel.add(submitButton);
+ 
+               // Delete the form panel to the window
+               deleteSellerFrame.add(formPanel);
+ 
+               deleteSellerFrame.setVisible(true);
+           }
+       });
+       panel.add(deleteSellerButton);
+        
+       
+       //Delete Category
+       JButton deleteCategoryButton = new JButton("Delete Category");
+       deleteCategoryButton.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+               // Display a new window to delete a Category
+               JFrame deleteCategoryFrame = new JFrame("Enter Category ID");
+               deleteCategoryFrame.setSize(300, 300);
+ 
+               // Create a panel to hold the form elements
+               JPanel formPanel = new JPanel();
+               formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+ 
+               // Delete text fields for the Category's name and email
+               JLabel idLbl = new JLabel("First Name:");
+               JTextField idTxt = new JTextField(10);
+               formPanel.add(idLbl);
+               formPanel.add(idTxt);
+ 
+               // Delete a button to submit the form
+               JButton submitButton = new JButton("Delete Category");
+               submitButton.addActionListener(new ActionListener() {
+                   public void actionPerformed(ActionEvent a) {
+                       // Get the values from the form fields and delete the Category to the database
+                       Integer id = Integer.parseInt(idTxt.getText());
+                       
+                       //Delete the Category to the database
+                       
+                       Connection connection = null;
+                       try {
+                           connection = DatabaseConnection.getConnection(); // get the database connection
+                           connection.setAutoCommit(false); // start the transaction
+                           CRUD<Category> categoryImp = new CategoryImp(connection);
+                           int result = categoryImp.delete(id);
+                          System.out.println(result);
+                           connection.commit();
+                       } catch (SQLException e) {
+                           if (connection != null) {
+                               try {
+                                   connection.rollback();
+                               } catch (SQLException e1) {
+                                   System.out.println("Could not delete new category nor rollback. See error stack trace.");
+                                   e1.printStackTrace();
+                               } // rollback the transaction if an exception occurs
+                           }
+                           System.out.println("Could not delete new category. See error stack trace.");
+                           e.printStackTrace();
+                       } finally {
+                           if (connection != null) {
+                               try {
+                                   connection.close(); // close the connection
+                               } catch (SQLException e) {
+                                   System.out.println("Connection could not close. See error stack trace.");
+                                   e.printStackTrace();
+                               } 
+                           }
+                       }
+                       
+                       
+                       // Close the "Delete Category" window
+                       deleteCategoryFrame.dispose();
+                   }
+               });
+               formPanel.add(submitButton);
+ 
+               // Delete the form panel to the window
+               deleteCategoryFrame.add(formPanel);
+ 
+               deleteCategoryFrame.setVisible(true);
+           }
+       });
+       panel.add(deleteCategoryButton);
 
 
         //
