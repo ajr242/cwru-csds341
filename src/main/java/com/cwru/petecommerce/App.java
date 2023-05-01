@@ -4,20 +4,15 @@ import java.sql.SQLException;
 import java.sql.Connection;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Scanner;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.dao.abstraction.CRUDComposite;
-import com.cwru.petecommerce.dao.implementation.CartImp;
-import com.cwru.petecommerce.dao.implementation.ProductImp;
-import com.cwru.petecommerce.dao.implementation.PurchaseImp;
-import com.cwru.petecommerce.dao.implementation.PurchaseProductImp;
-import com.cwru.petecommerce.models.Cart;
-import com.cwru.petecommerce.models.Product;
-import com.cwru.petecommerce.models.Purchase;
-import com.cwru.petecommerce.models.PurchaseProduct;
+import com.cwru.petecommerce.dao.implementation.*;
+import com.cwru.petecommerce.models.*;
 import com.cwru.petecommerce.utils.InitDatabase;
 import com.cwru.petecommerce.utils.DatabaseConnection;
 
@@ -27,6 +22,15 @@ public class App {
 
         try {
             initDB();
+
+            List<Seller> sellers = new ArrayList<>();
+            sellers.add(new Seller(0, "Pet Palace", "petpalace@gmail.com"));
+            sellers.add(new Seller(0, "Pet Paradise", "petparadise@gmail.com"));
+            sellers.add(new Seller(0, "Pet World", "petworld@gmail.com"));
+            sellers.add(new Seller(0, "Pet Central", "petcentral@gmail.com"));
+            sellers.add(new Seller(0, "Pet Stop", "petstop@gmail.com"));
+            insertSellers(sellers);
+
             //insertProduct();
             //insertProductUI();
             //retrieveById();
@@ -118,6 +122,36 @@ public class App {
         }
     }
 
+    private static void insertSellers(List<Seller> sellers) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+    
+            CRUD<Seller> sellerImp = new SellerImp(connection);
+    
+            int totalInserted = 0;
+    
+            // create sellers and add them to the database
+            for (Seller seller : sellers) {
+                int result = sellerImp.create(seller);
+                totalInserted += result;
+            }
+    
+            System.out.println("Inserted " + totalInserted + " seller(s).");
+    
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
+    }
 
     // Methods for Product
     private static void insertProduct() throws SQLException {
