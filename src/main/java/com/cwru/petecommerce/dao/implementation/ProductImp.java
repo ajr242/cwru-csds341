@@ -12,7 +12,6 @@ import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.models.Product;
-import com.cwru.petecommerce.models.Seller;
 
 public class ProductImp implements CRUD<Product>{
 
@@ -92,12 +91,13 @@ public class ProductImp implements CRUD<Product>{
         }
     }
 
+    /*
     public List<Product> getAllProdSellerInfobySellerID(int sellerID) throws SQLException {
         //String query = "SELECT * FROM Product WHERE sellerID = ?";
 
         String query = "SELECT *, p.id as productID, s.id as sellerID" +
-                        "FROM Seller s " +
-                        "JOIN Product p ON s.id = p.Sellerid " +
+                        "FROM Seller s" +
+                        "JOIN Product p ON s.id = p.Sellerid" +
                         "WHERE s.sellerID = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query);) {
@@ -126,6 +126,7 @@ public class ProductImp implements CRUD<Product>{
             throw e;
         }
     }
+    */
 
     // Retrieve all products
     // If there are no products, return an empty list
@@ -223,7 +224,7 @@ public class ProductImp implements CRUD<Product>{
     
     // Retrieve all products by seller
     public List<Product> getBySeller(int sellerId) throws SQLException {
-        String query = "SELECT * FROM Product WHERE seller_id = ?";
+        String query = "SELECT * FROM Product WHERE sellerID = ?";
     
         try (PreparedStatement pstmt = connection.prepareStatement(query);) {
     
