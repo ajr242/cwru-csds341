@@ -1545,29 +1545,31 @@ public class AppUI {
                           PurchaseImp purchaseImp = new PurchaseImp(connection);
                           Purchase purchase = new Purchase(0, paymentType, 0, date, custId, false);
                           int purchaseID = purchaseImp.create(purchase);
-                          
+
                           // insert items into PurchaseProduct table and update product stock
                           ProductImp productImp = new ProductImp(connection);
                           PurchaseProductImp purchaseProductImp = new PurchaseProductImp(connection);
                           int totalAmount = 0;
                           for(Cart cartItem: cartItems) {
-                              Optional<Product> optionalProduct = productImp.getById(cartItem.getProductID());
-                              if (optionalProduct.isPresent()) {
-                                  Product product = optionalProduct.get();
-              
-                                  // TODO: Deal with purchases where this is not the case
-                                  if(product.getStock() >= cartItem.getQuantity()) {
-                                      // reduce product stock by cart item quantity
-                                      productImp.updateStock(product.getId(), -cartItem.getQuantity());
-                          
-                                      // insert item into PurchaseProduct table
-                                      PurchaseProduct purchaseProduct = new PurchaseProduct(purchaseID, cartItem.getProductID(), product.getPrice(), cartItem.getQuantity());
-                                      purchaseProductImp.create(purchaseProduct);
-                          
-                                      // update total amount
-                                      totalAmount += product.getPrice() * cartItem.getQuantity();
-                                  }
-                              }
+                            System.out.println(cartItem.getProductID());
+                            Optional<Product> optionalProduct = productImp.getById(cartItem.getProductID());
+
+                            if (optionalProduct.isPresent()) {
+                                Product product = optionalProduct.get();
+
+                                // TODO: Deal with purchases where this is not the case
+                                if(product.getStock() >= cartItem.getQuantity()) {
+                                    // reduce product stock by cart item quantity
+                                    productImp.updateStock(product.getId(), -cartItem.getQuantity());
+                        
+                                    // insert item into PurchaseProduct table
+                                    PurchaseProduct purchaseProduct = new PurchaseProduct(purchaseID, cartItem.getProductID(), product.getPrice(), cartItem.getQuantity());
+                                    purchaseProductImp.create(purchaseProduct);
+                        
+                                    // update total amount
+                                    totalAmount += product.getPrice() * cartItem.getQuantity();
+                                }
+                            }
                           }
                       
                           // update totalAmount in Purchase table
@@ -1576,7 +1578,8 @@ public class AppUI {
                           
                           // delete all items in customer's cart
                           cartImp.deleteAllByCustomerID(custId);
-              
+
+                          connection.commit(); // commit the transaction
                       } catch (SQLException e) {
                         try {
                             connection.rollback();

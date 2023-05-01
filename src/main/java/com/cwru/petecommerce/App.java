@@ -310,7 +310,8 @@ public class App {
             
             // delete all items in customer's cart
             cartImp.deleteAllByCustomerID(customerID);
-
+            
+            connection.commit(); // commit the transaction
         } catch (SQLException e) {
             if (connection != null) {
                 connection.rollback(); // rollback the transaction if an exception occurs
