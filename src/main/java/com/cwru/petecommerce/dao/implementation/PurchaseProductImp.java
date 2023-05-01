@@ -22,7 +22,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
     // Add a product to the purchase for a specific customer
     @Override
     public int create(PurchaseProduct purchaseProduct) throws SQLException {
-        String query = "INSERT INTO PurchaseProduct (purchaseID, productID, price, quantity) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Purchase_Product (purchaseID, productID, price, quantity) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, purchaseProduct.getPurchaseID());
@@ -42,7 +42,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
     // Retrieve the purchase product for a specific purchase and product
     @Override
     public Optional<PurchaseProduct> getById(int purchaseID, int productID) throws SQLException {
-        String query = "SELECT * FROM PurchaseProduct WHERE purchaseID = ? AND productID = ?";
+        String query = "SELECT * FROM Purchase_Product WHERE purchaseID = ? AND productID = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, purchaseID);
@@ -70,7 +70,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
     // Retrieve all items in all purchases
     @Override
     public List<PurchaseProduct> getAll() throws SQLException {
-        String query = "SELECT * FROM PurchaseProduct";
+        String query = "SELECT * FROM Purchase_Product";
 
         try (
             PreparedStatement pstmt = connection.prepareStatement(query);
@@ -98,7 +98,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
     // Update the price and quantity of a product in a purchase
     @Override
     public int update(int purchaseID, int productID, PurchaseProduct purchaseProduct) throws SQLException {
-        String query = "UPDATE PurchaseProduct SET price = ?, quantity = ? WHERE purchaseID = ? AND productID = ?";
+        String query = "UPDATE Purchase_Product SET price = ?, quantity = ? WHERE purchaseID = ? AND productID = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, purchaseProduct.getPrice());
@@ -118,7 +118,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
     // Delete a product from a purchase
     @Override
     public int delete(int purchaseID, int productID) throws SQLException {
-        String query = "DELETE FROM PurchaseProduct WHERE purchaseID = ? AND productID = ?";
+        String query = "DELETE FROM Purchase_Product WHERE purchaseID = ? AND productID = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, purchaseID);
@@ -135,7 +135,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
 
     // Retrieve all products in a purchase
     public List<PurchaseProduct> getAllByPurchaseID(int purchaseID) throws SQLException {
-        String query = "SELECT * FROM PurchaseProduct WHERE purchaseID = ?";
+        String query = "SELECT * FROM Purchase_Product WHERE purchaseID = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, purchaseID);
