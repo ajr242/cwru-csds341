@@ -92,39 +92,39 @@ public class App {
                 + "CREATE TABLE Customer (id INT IDENTITY(1,1) PRIMARY KEY, firstName VARCHAR(20), lastName VARCHAR(20), email VARCHAR(30), passwordHash VARCHAR(64), address VARCHAR(40)) "
                 + "END";
                                 
-        String categoryTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Category' AND xtype='U') "
+String categoryTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Category' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Category (id INT IDENTITY(1,1) PRIMARY KEY, name VARCHAR(20), parentCatID INT, FOREIGN KEY (parentCatID) REFERENCES Category(id) ON DELETE SET NULL) "
+                + "CREATE TABLE Category (id INT IDENTITY(1,1) PRIMARY KEY, name VARCHAR(20), parentCatID INT, FOREIGN KEY (parentCatID) REFERENCES Category(id)) "
                 + "END";
         
-        String sellerTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Seller' AND xtype='U') "
+String sellerTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Seller' AND xtype='U') "
                 + "BEGIN "
                 + "CREATE TABLE Seller (id INT IDENTITY(1,1) PRIMARY KEY, name VARCHAR(20), email VARCHAR(30)) "
                 + "END";
 
         String productTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Product' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Product (id INT IDENTITY(1,1) PRIMARY KEY, sellerID INT, name VARCHAR(20), description VARCHAR(500), categoryID INT, price INT, stock INT, FOREIGN KEY (categoryID) REFERENCES Category(id), FOREIGN KEY (sellerID) REFERENCES Seller(id) ON DELETE SET NULL) "
+                + "CREATE TABLE Product (id INT IDENTITY(1,1) PRIMARY KEY, sellerID INT, name VARCHAR(20), description VARCHAR(500), categoryID INT, price INT, stock INT, FOREIGN KEY (categoryID) REFERENCES Category(id), FOREIGN KEY (sellerID) REFERENCES Seller(id)) "
                 + "END";
         
         String cartTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Cart' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Cart (customerID INT, productID INT, quantity INT, PRIMARY KEY (customerID, productID), FOREIGN KEY (customerID) REFERENCES Customer(id) ON DELETE SET NULL, FOREIGN KEY (productID) REFERENCES Product(id)) "
+                + "CREATE TABLE Cart (customerID INT, productID INT, quantity INT, PRIMARY KEY (customerID, productID), FOREIGN KEY (customerID) REFERENCES Customer(id), FOREIGN KEY (productID) REFERENCES Product(id)) "
                 + "END";
         
         String purchaseTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Purchase' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Purchase (id INT IDENTITY(1,1) PRIMARY KEY, paymentType VARCHAR(20), totalAmount INT, date DATE, customerID INT, delivered BIT, FOREIGN KEY (customerID) REFERENCES Customer(id) ON DELETE SET NULL) "
+                + "CREATE TABLE Purchase (id INT IDENTITY(1,1) PRIMARY KEY, paymentType VARCHAR(20), totalAmount INT, date DATE, customerID INT, delivered BIT, FOREIGN KEY (customerID) REFERENCES Customer(id)) "
                 + "END";
         
         String reviewTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Review' AND xtype='U') "
                 + "BEGIN "
                 + "CREATE TABLE Review (id INT IDENTITY(1,1) PRIMARY KEY, date VARCHAR(20), productID INT, customerID INT, rating INT, description VARCHAR(500), FOREIGN KEY (productID) REFERENCES Product(id), FOREIGN KEY (customerID) REFERENCES Customer(id)) "
                 + "END";
-        
+
         String purchaseProductTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Purchase_Product' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Purchase_Product (purchaseID INT, productID INT, price INT, quantity INT, PRIMARY KEY (purchaseID, productID), FOREIGN KEY (purchaseID) REFERENCES Purchase(id) ON DELETE SET NULL, FOREIGN KEY (productID) REFERENCES Product(id)) "
+                + "CREATE TABLE Purchase_Product (purchaseID INT, productID INT, price INT, quantity INT, PRIMARY KEY (purchaseID, productID), FOREIGN KEY (purchaseID) REFERENCES Purchase(id), FOREIGN KEY (productID) REFERENCES Product(id)) "
                 + "END";
 
         String catDeleteTrigger = "CREATE TRIGGER delete_children_categories "
@@ -138,7 +138,7 @@ public class App {
         String reviewTableRatingIndex = "CREATE INDEX idx_review_rating ON Review(rating)";
         String productTableSellerIDIndex = "CREATE INDEX idx_product_sellerID ON Product(sellerID)";
         String productTableCategoryIDIndex = "CREATE INDEX idx_product_categoryID ON Product(categoryID)";
-        String purchaseProductTablePurchaseIDIndex = "CREATE INDEX idx_purchaseproduct_purchaseID ON PurchaseProduct(purchaseID)";
+        String purchaseProductTablePurchaseIDIndex = "CREATE INDEX idx_purchaseproduct_purchaseID ON Purchase_Product(purchaseID)";
         
         try {
             initDatabase.createTable(customerTableQuery);
@@ -150,7 +150,7 @@ public class App {
             initDatabase.createTable(reviewTableQuery);
             initDatabase.createTable(purchaseProductTableQuery);
 
-            initDatabase.createTrigger(catDeleteTrigger);
+            //initDatabase.createTrigger(catDeleteTrigger);
 
             initDatabase.createIndex(reviewTableRatingIndex);
             initDatabase.createIndex(productTableSellerIDIndex);
