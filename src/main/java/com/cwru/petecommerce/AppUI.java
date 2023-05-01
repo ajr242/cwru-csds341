@@ -2320,7 +2320,7 @@ public class AppUI {
                           readFrame1.setSize(500, 150);
                            JPanel formPanel1 = new JPanel();
                            formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
-                           for (Product p : best_review_products){
+                           for (Product p : filter_avg){
                                 JLabel found = new JLabel(p.toString());
                                 formPanel1.add(found);
                            }
