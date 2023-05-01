@@ -2005,7 +2005,7 @@ public class AppUI {
                           
                           // create the cart
                           ProductImp productImp = new ProductImp(connection);
-                          List<Product> result = productImp.getAllbySellerID(sellerID); // pass the connection to the create method
+                          List<Product> result = productImp.getAllProdSellerInfobySellerID(sellerID); // pass the connection to the create method
                           
                           JFrame readFrame1 = new JFrame("Category Information");
                           readFrame1.setSize(500, 150);
