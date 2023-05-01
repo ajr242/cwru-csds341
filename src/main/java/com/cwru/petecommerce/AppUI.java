@@ -2199,6 +2199,167 @@ public class AppUI {
 
       });
       panel.add(getBestSellingProdutsButton);
+
+      //GgetBestSellingProduts UI
+      JButton getBestReviewedProductsButton = new JButton("Get Best Reviewed Products");
+      getBestReviewedProductsButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Product
+              JFrame getBestReviewedProductsFrame = new JFrame("Get Best Reviewed Products");
+              getBestReviewedProductsFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Product's name and email
+              JLabel numPLbl = new JLabel("Top number of Best Reviewed Products:");
+              JTextField numPTxt = new JTextField(10);
+              formPanel.add(numPLbl);
+              formPanel.add(numPTxt);
+              
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Get Best Reviewed Products");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and update the Product to the database
+                      Integer numProducts = Integer.parseInt(numPTxt.getText());
+                      
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+              
+                          ProductImp productImp = new ProductImp(connection);
+                          List<Product> best_review_products = productImp.getBestReviewedProducts(numProducts);
+                          
+                          JFrame readFrame1 = new JFrame("Top Product Information");
+                          readFrame1.setSize(500, 150);
+                           JPanel formPanel1 = new JPanel();
+                           formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
+                           for (Product p : best_review_products){
+                                JLabel found = new JLabel(p.toString());
+                                formPanel1.add(found);
+                           }
+                        readFrame1.add(formPanel1);
+                        readFrame1.setVisible(true);
+
+                          connection.commit(); // commit the transaction
+                      } catch (SQLException e) {
+                        try {
+                            connection.rollback();
+                        } catch (SQLException e1) {
+                            System.out.println("Could not get best reviewed product or rollback. See error stack trace.");
+                            e1.printStackTrace();
+                        } // rollback the transaction if an exception occurs
+                      } finally {
+                        if (connection != null) {
+                            try {
+                                connection.close(); // close the connection
+                            } catch (SQLException e) {
+                                System.out.println("Connection could not close. See error stack trace.");
+                                e.printStackTrace();
+                            } 
+                        }
+                      }
+
+                      // Close the "get revenue by category id" window
+                      getBestReviewedProductsFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              getBestReviewedProductsFrame.add(formPanel);
+
+              getBestReviewedProductsFrame.setVisible(true);
+          }
+
+      });
+      panel.add(getBestReviewedProductsButton);
+
+      //Filter by average rating
+      JButton filterByAvgRatingButton = new JButton("Filter By Average Rating");
+      filterByAvgRatingButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Product
+              JFrame filterByAvgRatingFrame = new JFrame("Filter by Average Rating");
+              filterByAvgRatingFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Product's name and email
+              JLabel minRatingLbl = new JLabel("Minimum Rating");
+              JTextField minRatingTxt = new JTextField(10);
+              JLabel maxRatingLbl = new JLabel("Maximum Rating");
+              JTextField maxRatingTxt = new JTextField(10);
+              formPanel.add(minRatingLbl);
+              formPanel.add(minRatingTxt);
+              formPanel.add(maxRatingLbl);
+              formPanel.add(maxRatingTxt);
+              
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Filter by Ratings");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and update the Product to the database
+                      Integer minRating = Integer.parseInt(minRatingTxt.getText());
+                      Integer maxRating = Integer.parseInt(maxRatingTxt.getText());
+                      
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+              
+                          ProductImp productImp = new ProductImp(connection);
+                          List<Product> filter_avg = productImp.filterByAvgRating(minRating, maxRating);
+                          
+                          JFrame readFrame1 = new JFrame("Filtered Product Information");
+                          readFrame1.setSize(500, 150);
+                           JPanel formPanel1 = new JPanel();
+                           formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
+                           for (Product p : best_review_products){
+                                JLabel found = new JLabel(p.toString());
+                                formPanel1.add(found);
+                           }
+                        readFrame1.add(formPanel1);
+                        readFrame1.setVisible(true);
+
+                          connection.commit(); // commit the transaction
+                      } catch (SQLException e) {
+                        try {
+                            connection.rollback();
+                        } catch (SQLException e1) {
+                            System.out.println("Could not get best filtered product or rollback. See error stack trace.");
+                            e1.printStackTrace();
+                        } // rollback the transaction if an exception occurs
+                      } finally {
+                        if (connection != null) {
+                            try {
+                                connection.close(); // close the connection
+                            } catch (SQLException e) {
+                                System.out.println("Connection could not close. See error stack trace.");
+                                e.printStackTrace();
+                            } 
+                        }
+                      }
+
+                      // Close the "get revenue by category id" window
+                      filterByAvgRatingFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              filterByAvgRatingFrame.add(formPanel);
+
+              filterByAvgRatingFrame.setVisible(true);
+          }
+
+      });
+      panel.add(filterByAvgRatingButton);
         //
         //
         //
