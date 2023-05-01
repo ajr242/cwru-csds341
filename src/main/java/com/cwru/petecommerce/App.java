@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Scanner;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.dao.abstraction.CRUDComposite;
@@ -95,7 +94,7 @@ public class App {
                                 
         String categoryTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Category' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Category (id INT IDENTITY(1,1) PRIMARY KEY, name VARCHAR(20), parentCatID INT, FOREIGN KEY (parentCatID) REFERENCES Category(id) ON DELETE CASCADE) "
+                + "CREATE TABLE Category (id INT IDENTITY(1,1) PRIMARY KEY, name VARCHAR(20), parentCatID INT, FOREIGN KEY (parentCatID) REFERENCES Category(id) ON DELETE SET NULL) "
                 + "END";
         
         String sellerTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Seller' AND xtype='U') "
@@ -105,17 +104,17 @@ public class App {
 
         String productTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Product' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Product (id INT IDENTITY(1,1) PRIMARY KEY, sellerID INT, name VARCHAR(20), description VARCHAR(500), categoryID INT, price INT, stock INT, FOREIGN KEY (categoryID) REFERENCES Category(id), FOREIGN KEY (sellerID) REFERENCES Seller(id) ON DELETE CASCADE) "
+                + "CREATE TABLE Product (id INT IDENTITY(1,1) PRIMARY KEY, sellerID INT, name VARCHAR(20), description VARCHAR(500), categoryID INT, price INT, stock INT, FOREIGN KEY (categoryID) REFERENCES Category(id), FOREIGN KEY (sellerID) REFERENCES Seller(id) ON DELETE SET NULL) "
                 + "END";
         
         String cartTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Cart' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Cart (customerID INT, productID INT, quantity INT, PRIMARY KEY (customerID, productID), FOREIGN KEY (customerID) REFERENCES Customer(id) ON DELETE CASCADE, FOREIGN KEY (productID) REFERENCES Product(id)) "
+                + "CREATE TABLE Cart (customerID INT, productID INT, quantity INT, PRIMARY KEY (customerID, productID), FOREIGN KEY (customerID) REFERENCES Customer(id) ON DELETE SET NULL, FOREIGN KEY (productID) REFERENCES Product(id)) "
                 + "END";
         
         String purchaseTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Purchase' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Purchase (id INT IDENTITY(1,1) PRIMARY KEY, paymentType VARCHAR(20), totalAmount INT, date DATE, customerID INT, delivered BIT, FOREIGN KEY (customerID) REFERENCES Customer(id) ON DELETE CASCADE) "
+                + "CREATE TABLE Purchase (id INT IDENTITY(1,1) PRIMARY KEY, paymentType VARCHAR(20), totalAmount INT, date DATE, customerID INT, delivered BIT, FOREIGN KEY (customerID) REFERENCES Customer(id) ON DELETE SET NULL) "
                 + "END";
         
         String reviewTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Review' AND xtype='U') "
@@ -125,7 +124,7 @@ public class App {
         
         String purchaseProductTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Purchase_Product' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Purchase_Product (purchaseID INT, productID INT, price INT, quantity INT, PRIMARY KEY (purchaseID, productID), FOREIGN KEY (purchaseID) REFERENCES Purchase(id) ON DELETE CASCADE, FOREIGN KEY (productID) REFERENCES Product(id)) "
+                + "CREATE TABLE Purchase_Product (purchaseID INT, productID INT, price INT, quantity INT, PRIMARY KEY (purchaseID, productID), FOREIGN KEY (purchaseID) REFERENCES Purchase(id) ON DELETE SET NULL, FOREIGN KEY (productID) REFERENCES Product(id)) "
                 + "END";
 
         String catDeleteTrigger = "CREATE TRIGGER delete_children_categories "
