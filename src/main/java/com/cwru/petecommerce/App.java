@@ -73,6 +73,54 @@ public class App {
             products.add(new Product(20, 5, "Hartz DuraPlay Ball", "Hartz DuraPlay Ball for Dogs, Large", 13, 799, 60));
             insertProducts(products);
 
+            List<Customer> customers = new ArrayList<>();
+            customers.add(new Customer(1, "John", "Doe", "johndoe@gmail.com", "hjk7$g@1", "123 Main St, Anytown USA"));
+            customers.add(new Customer(2, "Jane", "Smith", "janesmith@gmail.com", "fgh3@h6", "456 Oak St, Anycity USA"));
+            customers.add(new Customer(3, "Mark", "Johnson", "markjohnson@yahoo.com", "abc9&d$8", "789 Maple St, Anystate USA"));
+            customers.add(new Customer(4, "Susan", "Lee", "susanlee@yahoo.com", "klm1#n@4", "321 Pine St, Anyville USA"));
+            customers.add(new Customer(5, "David", "Brown", "davidbrown@gmail.com", "pqr5$t^7", "654 Elm St, Anymetropolis USA"));
+            customers.add(new Customer(6, "Amanda", "Jones", "amandajones@yahoo.com", "xyz2*q%9", "987 Cedar St, Anyborough USA"));
+            customers.add(new Customer(7, "Michael", "Davis", "michaeldavis@gmail.com", "uvw6$r^5", "246 Oak St, Anycity USA"));
+            customers.add(new Customer(8, "Emily", "Wilson", "emilywilson@yahoo.com", "efg4!h$7", "135 Maple St, Anystate USA"));
+            customers.add(new Customer(9, "James", "Miller", "jamesmiller@gmail.com", "nop8*r$3", "864 Pine St, Anyville USA"));
+            customers.add(new Customer(10, "Sarah", "Taylor", "sarahtaylor@yahoo.com", "ijk2#l$9", "753 Elm St, Anymetropolis USA"));
+            insertCustomers(customers);
+
+            List<Review> reviews = new ArrayList<>();
+            reviews.add(new Review(1, new Date(), 1, 1, 4, "Great product, my cat loves it!"));
+            reviews.add(new Review(2, new Date(), 2, 2, 5, "Amazing service and high-quality products."));
+            reviews.add(new Review(3, new Date(), 3, 3, 3, "Product was okay, but shipping took a long time."));
+            reviews.add(new Review(4, new Date(), 4, 4, 2, "Product was damaged when it arrived, very disappointed."));
+            reviews.add(new Review(5, new Date(), 5, 5, 4, "Happy with my purchase, will buy from this seller again."));
+            reviews.add(new Review(6, new Date(), 6, 6, 5, "Fast shipping and great customer service."));
+            reviews.add(new Review(7, new Date(), 7, 7, 3, "Product was not what I expected, but seller was responsive to my concerns."));
+            reviews.add(new Review(8, new Date(), 8, 8, 4, "Good quality product, would recommend."));
+            reviews.add(new Review(9, new Date(), 9, 9, 5, "My dog absolutely loves this toy!"));
+            reviews.add(new Review(10, new Date(), 10, 10, 3, "Product was smaller than I expected, but otherwise good."));
+            reviews.add(new Review(11, new Date(), 2, 3, 5, "Great product and fast shipping!"));
+            reviews.add(new Review(12, new Date(), 3, 1, 4, "Good product, but wish it was cheaper."));
+            reviews.add(new Review(13, new Date(), 1, 2, 3, "Product was okay, but my pet didn't seem to like it."));
+            reviews.add(new Review(14, new Date(), 5, 4, 5, "Excellent product and customer service!"));
+            reviews.add(new Review(15, new Date(), 4, 5, 2, "Product arrived late and damaged."));
+            reviews.add(new Review(16, new Date(), 6, 7, 4, "Great quality product, worth the price."));
+            reviews.add(new Review(17, new Date(), 7, 8, 3, "Product was not as advertised."));
+            reviews.add(new Review(18, new Date(), 8, 9, 5, "Very satisfied with my purchase!"));
+            reviews.add(new Review(19, new Date(), 9, 10, 4, "Good product, but could have been packaged better."));
+            reviews.add(new Review(20, new Date(), 10, 6, 5, "Love this product and seller!"));
+            insertReviews(reviews);
+
+            List<Cart> carts = new ArrayList<>();
+            carts.add(new Cart(1, 3, 2));
+            carts.add(new Cart(1, 5, 1));
+            carts.add(new Cart(2, 4, 3));
+            carts.add(new Cart(3, 1, 2));
+            carts.add(new Cart(3, 6, 1));
+            carts.add(new Cart(4, 2, 4));
+            carts.add(new Cart(4, 5, 2));
+            carts.add(new Cart(5, 1, 1));
+            carts.add(new Cart(5, 4, 2));
+            carts.add(new Cart(5, 6, 1));
+            insertCarts(carts);
             //insertProductUI();
             //retrieveById();
             //retrieveAll();
@@ -256,6 +304,98 @@ public class App {
         }
     }
 
+    private static void insertCustomers(List<Customer> customers) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+    
+            CRUD<Customer> customerImp = new CustomerImp(connection);
+    
+            int totalInserted = 0;
+    
+            // create sellers and add them to the database
+            for (Customer product : customers) {
+                int result = customerImp.create(product);
+                totalInserted += result;
+            }
+    
+            System.out.println("Inserted " + totalInserted + " products(s).");
+    
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
+    }
+
+    private static void insertReviews(List<Review> reviews) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+    
+            CRUD<Review> reviewImp = new ReviewImp(connection);
+    
+            int totalInserted = 0;
+    
+            // create sellers and add them to the database
+            for (Review review : reviews) {
+                int result = reviewImp.create(review);
+                totalInserted += result;
+            }
+    
+            System.out.println("Inserted " + totalInserted + " products(s).");
+    
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
+    }
+
+    private static void insertCarts(List<Cart> carts) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+    
+            CRUDComposite<Cart> cartImp = new CartImp(connection);
+    
+            int totalInserted = 0;
+    
+            // create sellers and add them to the database
+            for (Cart review : carts) {
+                int result = cartImp.create(review);
+                totalInserted += result;
+            }
+    
+            System.out.println("Inserted " + totalInserted + " products(s).");
+    
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
+    }
 
 
     private static void retrieveProductById() throws SQLException {
