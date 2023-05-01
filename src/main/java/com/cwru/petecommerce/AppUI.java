@@ -175,12 +175,18 @@ public class AppUI {
                 submitButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent a) {
                         // Get the values from the form fields and add the Product to the database
-                        int sellerID = Integer.parseInt(sellerIDTxt.getText());
+                        Integer sellerID = Integer.parseInt(sellerIDTxt.getText());
+                        if (sellerID == 0){
+                            sellerID = null;
+                        }
                         String name = nameTxt.getText();
                         String descrip = descripTxt.getText();
-                        int catID = Integer.parseInt(catIDTxt.getText());
-                        int price = Integer.parseInt(priceTxt.getText());
-                        int stock = Integer.parseInt(stockTxt.getText());
+                        Integer catID = Integer.parseInt(catIDTxt.getText());
+                        if (catID == 0){
+                            catID = null;
+                        }
+                        Integer price = Integer.parseInt(priceTxt.getText());
+                        Integer stock = Integer.parseInt(stockTxt.getText());
                         
                         //Add the Product to the database
                         Product product = new Product(0, sellerID, name, descrip, catID, price, stock);
