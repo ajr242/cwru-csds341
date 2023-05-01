@@ -12,9 +12,14 @@ import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.models.Category;
-import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class CategoryImp implements CRUD<Category> {
+
+    private final Connection connection;
+
+    public CategoryImp(Connection connection) {
+        this.connection = connection;
+    }
 
     // Create a new category
     // No need to pass in an id, the database will auto generate one
@@ -22,10 +27,7 @@ public class CategoryImp implements CRUD<Category> {
     public int create(Category category) throws SQLException {
         String query = "INSERT INTO Category (name, parentCatID) VALUES (?, ?)";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setString(1, category.getName());
             if (category.getParentCatID() != null) {
                 pstmt.setInt(2, category.getParentCatID());
@@ -48,10 +50,7 @@ public class CategoryImp implements CRUD<Category> {
     public Optional<Category> getById(int id) throws SQLException {
         String query = "SELECT * FROM Category WHERE id = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
 
             ResultSet rs = pstmt.executeQuery();
@@ -82,7 +81,6 @@ public class CategoryImp implements CRUD<Category> {
         String query = "SELECT * FROM Category";
 
         try (
-            Connection connection = DatabaseConnection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
         ) {
@@ -112,10 +110,7 @@ public class CategoryImp implements CRUD<Category> {
     public int update(int id, Category category) throws SQLException {
         String query = "UPDATE Category SET name = ?, parentCatID = ? WHERE id = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setString(1, category.getName());
             if (category.getParentCatID() != null) {
                 pstmt.setInt(2, category.getParentCatID());
@@ -139,11 +134,7 @@ public class CategoryImp implements CRUD<Category> {
     
         String query = "DELETE FROM Category WHERE id = ?";
     
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected;

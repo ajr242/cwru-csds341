@@ -11,10 +11,15 @@ import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.models.Customer;
-import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class CustomerImp implements CRUD<Customer>{
 
+    private final Connection connection;
+
+    public CustomerImp(Connection connection) {
+        this.connection = connection;
+    }
+    
     // Create a new customer
     // No need to pass in an id, the database will auto generate one
     @Override
@@ -22,11 +27,7 @@ public class CustomerImp implements CRUD<Customer>{
 
         String query = "INSERT INTO Customer (firstName, lastName, email, passwordHash, address) VALUES (?, ?, ?, ?, ?)";
 
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
 
             pstmt.setString(1, customer.getFirstName());
             pstmt.setString(2, customer.getLastName());
@@ -51,11 +52,7 @@ public class CustomerImp implements CRUD<Customer>{
 
         String query = "SELECT * FROM Customer WHERE id = ?";
 
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -88,7 +85,6 @@ public class CustomerImp implements CRUD<Customer>{
         String query = "SELECT * FROM Customer";
 
         try (
-                Connection connection = DatabaseConnection.getConnection();
                 PreparedStatement pstmt = connection.prepareStatement(query);
                 ResultSet rs = pstmt.executeQuery();
 
@@ -122,11 +118,7 @@ public class CustomerImp implements CRUD<Customer>{
     public int update(int id, Customer customer) throws SQLException {
         String query = "UPDATE Customer SET firstName = ?, lastName = ?, email = ?, passwordHash = ?, address = ? WHERE id = ?";
 
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setString(1, customer.getFirstName());
             pstmt.setString(2, customer.getLastName());
             pstmt.setString(3, customer.getEmail());
@@ -151,11 +143,7 @@ public class CustomerImp implements CRUD<Customer>{
     
         String query = "DELETE FROM Customer WHERE id = ?";
     
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected;

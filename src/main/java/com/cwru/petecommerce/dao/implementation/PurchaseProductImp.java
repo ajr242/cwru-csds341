@@ -10,19 +10,21 @@ import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUDComposite;
 import com.cwru.petecommerce.models.PurchaseProduct;
-import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
+    
+    private final Connection connection;
+
+    public PurchaseProductImp(Connection connection) {
+        this.connection = connection;
+    }
 
     // Add a product to the purchase for a specific customer
     @Override
     public int create(PurchaseProduct purchaseProduct) throws SQLException {
         String query = "INSERT INTO PurchaseProduct (purchaseID, productID, price, quantity) VALUES (?, ?, ?, ?)";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, purchaseProduct.getPurchaseID());
             pstmt.setInt(2, purchaseProduct.getProductID());
             pstmt.setInt(3, purchaseProduct.getPrice());
@@ -42,10 +44,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
     public Optional<PurchaseProduct> getById(int purchaseID, int productID) throws SQLException {
         String query = "SELECT * FROM PurchaseProduct WHERE purchaseID = ? AND productID = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, purchaseID);
             pstmt.setInt(2, productID);
 
@@ -74,7 +73,6 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
         String query = "SELECT * FROM PurchaseProduct";
 
         try (
-            Connection connection = DatabaseConnection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
         ) {
@@ -102,10 +100,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
     public int update(int purchaseID, int productID, PurchaseProduct purchaseProduct) throws SQLException {
         String query = "UPDATE PurchaseProduct SET price = ?, quantity = ? WHERE purchaseID = ? AND productID = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, purchaseProduct.getPrice());
             pstmt.setInt(2, purchaseProduct.getQuantity());
             pstmt.setInt(3, purchaseID);
@@ -125,10 +120,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
     public int delete(int purchaseID, int productID) throws SQLException {
         String query = "DELETE FROM PurchaseProduct WHERE purchaseID = ? AND productID = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, purchaseID);
             pstmt.setInt(2, productID);
 
@@ -145,10 +137,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
     public List<PurchaseProduct> getAllByPurchaseID(int purchaseID) throws SQLException {
         String query = "SELECT * FROM PurchaseProduct WHERE purchaseID = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, purchaseID);
 
             ResultSet rs = pstmt.executeQuery();
