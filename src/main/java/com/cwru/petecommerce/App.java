@@ -1,6 +1,8 @@
 package com.cwru.petecommerce;
 
 import java.sql.SQLException;
+import java.sql.Connection;
+
 import java.util.List;
 import java.util.Date;
 import java.util.Optional;
@@ -17,6 +19,7 @@ import com.cwru.petecommerce.models.Product;
 import com.cwru.petecommerce.models.Purchase;
 import com.cwru.petecommerce.models.PurchaseProduct;
 import com.cwru.petecommerce.utils.InitDatabase;
+import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class App {
     public static void main(String[] args) {
@@ -97,122 +100,227 @@ public class App {
 
     // Methods for Product
     private static void insertProduct() throws SQLException {
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+            
+            // create the cart
+            Product dogFood = new Product(0, null, "Dog Food", "Yummy", null, 10000, 2);
 
-        Product dogFood = new Product(0, null, "Dog Food", "Yummy", null, 10000, 2);
-
-        CRUD<Product> productImp = new ProductImp();
-
-        int result = productImp.create(dogFood);
-
-        System.out.println(result);
+            CRUD<Product> productImp = new ProductImp(connection);
+    
+            int result = productImp.create(dogFood);
+    
+            System.out.println(result);
+            
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
     }
 
     private static void insertProductUI() throws SQLException {
+        Connection connection = null;
         Scanner myObj = new Scanner(System.in);
-        String productName, productDescrip;
-        int sellerID, categoryID, price, stock;
-        
-        // Enter username and press Enter
-       System.out.println("Enter product name then enter. "); 
-       productName = myObj.nextLine();   
-       System.out.println("Enter product description then enter.");
-       productDescrip = myObj.nextLine();
-       System.out.println("Enter sellerID and 0 if none. "); 
-       sellerID = myObj.nextInt();
-       System.out.println("Enter categoryID and 0 if none. "); 
-       categoryID = myObj.nextInt();
-       System.out.println("Enter price with no decimal. "); 
-       price = myObj.nextInt();
-       System.out.println("Enter stock quantity. "); 
-       stock = myObj.nextInt();
-       
-       Product x = new Product(0, sellerID, productName, productDescrip, categoryID, price, stock);
-        CRUD<Product> productImp = new ProductImp();
-        int result = productImp.create(x);
-        System.out.println(result);
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+            
+                        String productName, productDescrip;
+            int sellerID, categoryID, price, stock;
+            
+            // Enter username and press Enter
+            System.out.println("Enter product name then enter. "); 
+            productName = myObj.nextLine();   
+            System.out.println("Enter product description then enter.");
+            productDescrip = myObj.nextLine();
+            System.out.println("Enter sellerID and 0 if none. "); 
+            sellerID = myObj.nextInt();
+            System.out.println("Enter categoryID and 0 if none. "); 
+            categoryID = myObj.nextInt();
+            System.out.println("Enter price with no decimal. "); 
+            price = myObj.nextInt();
+            System.out.println("Enter stock quantity. "); 
+            stock = myObj.nextInt();
+            
+            Product x = new Product(0, sellerID, productName, productDescrip, categoryID, price, stock);
+            CRUD<Product> productImp = new ProductImp(connection);
+            int result = productImp.create(x);
+            System.out.println(result);
+            
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+                myObj.close();
+            }
+        }
     }
+
 
     private static void retrieveProductById() throws SQLException {
-        ProductImp productImp = new ProductImp();
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+            
+            // create the cart
+            ProductImp productImp = new ProductImp(connection);
 
-        Optional<Product> optionalProduct = productImp.getById(32);
-
-        if (optionalProduct.isPresent()) {
-            System.out.println("Product found");
-            Product product = optionalProduct.get();
-            System.out.println(product);
-        } else {
-            System.out.println("Product not found");
+            Optional<Product> optionalProduct = productImp.getById(32);
+    
+            if (optionalProduct.isPresent()) {
+                System.out.println("Product found");
+                Product product = optionalProduct.get();
+                System.out.println(product);
+            } else {
+                System.out.println("Product not found");
+            }
+            
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
         }
-
     }
     
-    private static void retrieveAllProduct() throws SQLException {
-        ProductImp productImp = new ProductImp();
+    private static void retrieveAllProducts() throws SQLException {
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+            
+            ProductImp productImp = new ProductImp(connection);
 
-        List<Product> products = productImp.getAll();
-
-        for (Product product : products) {
-            System.out.println(product);
+            List<Product> products = productImp.getAll();
+    
+            for (Product product : products) {
+                System.out.println(product);
+            }
+            
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
         }
     }
 
     private static void addToCart(int customerId, int productId, int quantity) throws SQLException {
-        Cart cart = new Cart(customerId, productId, quantity);
-        CRUDComposite<Cart> cartImp = new CartImp();
-        int result = cartImp.create(cart);
-        System.out.println(result); // print the ID of the created cart
-    }
-
-    public void checkout(int customerID, String paymentType) throws SQLException {
-        // get all items in the customer's cart
-        CartImp cartImp = new CartImp();
-        List<Cart> cartItems = cartImp.getAllByCustomerID(customerID);
-        
-        // check if cart is empty
-        if(cartItems.isEmpty()) {
-            System.out.println("Cart is empty");
-            return;
-        }
-        
-        // get current date
-        Date date = new Date();
-        
-        // create new purchase record
-        PurchaseImp purchaseImp = new PurchaseImp();
-        Purchase purchase = new Purchase(0, paymentType, 0, date, customerID, false);
-        int purchaseID = purchaseImp.create(purchase);
-        
-        // insert items into PurchaseProduct table and update product stock
-        ProductImp productImp = new ProductImp();
-        PurchaseProductImp purchaseProductImp = new PurchaseProductImp();
-        int totalAmount = 0;
-        for(Cart cartItem: cartItems) {
-            Optional<Product> optionalProduct = productImp.getById(cartItem.getProductID());
-            if (optionalProduct.isPresent()) {
-                Product product = optionalProduct.get();
-
-                // TODO: Deal with purchases where this is not the case
-                if(product.getStock() >= cartItem.getQuantity()) {
-                    // reduce product stock by cart item quantity
-                    productImp.updateStock(product.getId(), -cartItem.getQuantity());
-        
-                    // insert item into PurchaseProduct table
-                    PurchaseProduct purchaseProduct = new PurchaseProduct(purchaseID, cartItem.getProductID(), product.getPrice(), cartItem.getQuantity());
-                    purchaseProductImp.create(purchaseProduct);
-        
-                    // update total amount
-                    totalAmount += product.getPrice() * cartItem.getQuantity();
-                }
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+            
+            // create the cart
+            Cart cart = new Cart(customerId, productId, quantity);
+            CRUDComposite<Cart> cartImp = new CartImp(connection);
+            int result = cartImp.create(cart); // pass the connection to the create method
+            System.out.println(result); // print the ID of the created cart
+            
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
             }
         }
+    }
     
-        // update totalAmount in Purchase table
-        purchase.setTotalAmount(totalAmount);
-        purchaseImp.update(purchaseID, purchase);
+
+    public void checkout(int customerID, String paymentType) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+
+            // get all items in the customer's cart
+            CartImp cartImp = new CartImp(connection);
+            List<Cart> cartItems = cartImp.getAllByCustomerID(customerID);
+            
+            // check if cart is empty
+            if(cartItems.isEmpty()) {
+                System.out.println("Cart is empty");
+                return;
+            }
+            
+            // get current date
+            Date date = new Date();
+            
+            // create new purchase record
+            PurchaseImp purchaseImp = new PurchaseImp(connection);
+            Purchase purchase = new Purchase(0, paymentType, 0, date, customerID, false);
+            int purchaseID = purchaseImp.create(purchase);
+            
+            // insert items into PurchaseProduct table and update product stock
+            ProductImp productImp = new ProductImp(connection);
+            PurchaseProductImp purchaseProductImp = new PurchaseProductImp(connection);
+            int totalAmount = 0;
+            for(Cart cartItem: cartItems) {
+                Optional<Product> optionalProduct = productImp.getById(cartItem.getProductID());
+                if (optionalProduct.isPresent()) {
+                    Product product = optionalProduct.get();
+
+                    // TODO: Deal with purchases where this is not the case
+                    if(product.getStock() >= cartItem.getQuantity()) {
+                        // reduce product stock by cart item quantity
+                        productImp.updateStock(product.getId(), -cartItem.getQuantity());
+            
+                        // insert item into PurchaseProduct table
+                        PurchaseProduct purchaseProduct = new PurchaseProduct(purchaseID, cartItem.getProductID(), product.getPrice(), cartItem.getQuantity());
+                        purchaseProductImp.create(purchaseProduct);
+            
+                        // update total amount
+                        totalAmount += product.getPrice() * cartItem.getQuantity();
+                    }
+                }
+            }
         
-        // delete all items in customer's cart
-        cartImp.deleteAllByCustomerID(customerID);
+            // update totalAmount in Purchase table
+            purchase.setTotalAmount(totalAmount);
+            purchaseImp.update(purchaseID, purchase);
+            
+            // delete all items in customer's cart
+            cartImp.deleteAllByCustomerID(customerID);
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
     }
     
     

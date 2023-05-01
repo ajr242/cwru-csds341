@@ -11,9 +11,14 @@ import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.models.Seller;
-import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class SellerImp implements CRUD<Seller>{
+
+    private final Connection connection;
+
+    public SellerImp(Connection connection) {
+        this.connection = connection;
+    }
 
     // Create a new seller
     // No need to pass in an id, the database will auto generate one
@@ -22,11 +27,7 @@ public class SellerImp implements CRUD<Seller>{
 
         String query = "INSERT INTO Seller (name, email) VALUES (?, ?)";
 
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setString(1, seller.getName());
             pstmt.setString(2, seller.getEmail());
 
@@ -47,11 +48,7 @@ public class SellerImp implements CRUD<Seller>{
 
         String query = "SELECT * FROM Seller WHERE id = ?";
 
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -81,7 +78,6 @@ public class SellerImp implements CRUD<Seller>{
         String query = "SELECT * FROM Seller";
 
         try (
-                Connection connection = DatabaseConnection.getConnection();
                 PreparedStatement pstmt = connection.prepareStatement(query);
                 ResultSet rs = pstmt.executeQuery();
 
@@ -112,11 +108,7 @@ public class SellerImp implements CRUD<Seller>{
     public int update(int id, Seller seller) throws SQLException {
         String query = "UPDATE Seller SET name = ?, email = ? WHERE id = ?";
 
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setString(1, seller.getName());
             pstmt.setString(2, seller.getEmail());
             pstmt.setInt(3, id);
@@ -138,11 +130,7 @@ public class SellerImp implements CRUD<Seller>{
     
         String query = "DELETE FROM Seller WHERE id = ?";
     
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected;

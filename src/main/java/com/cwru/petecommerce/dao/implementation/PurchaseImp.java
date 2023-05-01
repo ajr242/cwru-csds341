@@ -11,9 +11,14 @@ import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.models.Purchase;
-import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class PurchaseImp implements CRUD<Purchase> {
+
+    private final Connection connection;
+
+    public PurchaseImp(Connection connection) {
+        this.connection = connection;
+    }
 
     // Create a new purchase
     // No need to pass in an id, the database will auto generate one
@@ -21,10 +26,7 @@ public class PurchaseImp implements CRUD<Purchase> {
     public int create(Purchase purchase) throws SQLException {
         String query = "INSERT INTO Purchase (paymentType, totalAmount, date, customerID, delivered) VALUES (?, ?, ?, ?, ?)";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setString(1, purchase.getPaymentType());
             pstmt.setInt(2, purchase.getTotalAmount());
             pstmt.setDate(3, new java.sql.Date(purchase.getDate().getTime()));
@@ -46,10 +48,7 @@ public class PurchaseImp implements CRUD<Purchase> {
     public Optional<Purchase> getById(int id) throws SQLException {
         String query = "SELECT * FROM Purchase WHERE id = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
 
             ResultSet rs = pstmt.executeQuery();
@@ -80,7 +79,6 @@ public class PurchaseImp implements CRUD<Purchase> {
         String query = "SELECT * FROM Purchase";
 
         try (
-            Connection connection = DatabaseConnection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
         ) {
@@ -110,10 +108,7 @@ public class PurchaseImp implements CRUD<Purchase> {
     public int update(int id, Purchase purchase) throws SQLException {
         String query = "UPDATE Purchase SET paymentType = ?, totalAmount = ?, date = ?, customerID = ?, delivered = ?, WHERE id = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setString(1, purchase.getPaymentType());
             pstmt.setInt(2, purchase.getTotalAmount());
             pstmt.setDate(3, new java.sql.Date(purchase.getDate().getTime()));
@@ -135,11 +130,7 @@ public class PurchaseImp implements CRUD<Purchase> {
     
         String query = "DELETE FROM Category WHERE id = ?";
     
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected;
@@ -155,10 +146,7 @@ public class PurchaseImp implements CRUD<Purchase> {
     public int setDelivered(int id) throws SQLException {
         String query = "UPDATE Purchase SET delivered = ? WHERE id = ?";
     
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setBoolean(1, true);
             pstmt.setInt(2, id);
     

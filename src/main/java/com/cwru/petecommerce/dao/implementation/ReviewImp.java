@@ -11,9 +11,14 @@ import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.models.Review;
-import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class ReviewImp implements CRUD<Review> {
+
+    private final Connection connection;
+
+    public ReviewImp(Connection connection) {
+        this.connection = connection;
+    }
 
     // Create a new review
     // No need to pass in an id, the database will auto generate one
@@ -21,10 +26,7 @@ public class ReviewImp implements CRUD<Review> {
     public int create(Review review) throws SQLException {
         String query = "INSERT INTO Review (date, productID, customerID, rating, description) VALUES (?, ?, ?, ?, ?)";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setTimestamp(1, new java.sql.Timestamp(review.getDate().getTime()));
             pstmt.setInt(2, review.getProductID());
             pstmt.setInt(3, review.getCustomerID());
@@ -46,10 +48,7 @@ public class ReviewImp implements CRUD<Review> {
     public Optional<Review> getById(int id) throws SQLException {
         String query = "SELECT * FROM Review WHERE id = ?";
 
-        try (
-            Connection connection = DatabaseConnection.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(query);
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
 
             ResultSet rs = pstmt.executeQuery();
@@ -80,7 +79,6 @@ public class ReviewImp implements CRUD<Review> {
         String query = "SELECT * FROM Review";
 
         try (
-            Connection connection = DatabaseConnection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
         ) {
@@ -110,11 +108,7 @@ public class ReviewImp implements CRUD<Review> {
     public int update(int id, Review review) throws SQLException {
         String query = "UPDATE Review SET date = ?, productID = ?, customerID = ?, rating = ?, description = ? WHERE id = ?";
 
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setTimestamp(1, new java.sql.Timestamp(review.getDate().getTime()));
             pstmt.setInt(2, review.getProductID());
             pstmt.setInt(3, review.getCustomerID());
@@ -139,11 +133,7 @@ public class ReviewImp implements CRUD<Review> {
     
         String query = "DELETE FROM Review WHERE id = ?";
     
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected;

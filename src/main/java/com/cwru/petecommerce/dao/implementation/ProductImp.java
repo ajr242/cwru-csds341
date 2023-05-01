@@ -12,9 +12,14 @@ import java.util.Optional;
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.models.Product;
-import com.cwru.petecommerce.utils.DatabaseConnection;
 
 public class ProductImp implements CRUD<Product>{
+
+    private final Connection connection;
+
+    public ProductImp(Connection connection) {
+        this.connection = connection;
+    }
 
     // Create a new product
     // No need to pass in an id, the database will auto generate one
@@ -23,11 +28,7 @@ public class ProductImp implements CRUD<Product>{
 
         String query = "INSERT INTO Product (sellerID, name, description, categoryID, price, stock) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             Integer sellerId = product.getSellerID();
             if (sellerId != null) {
                 pstmt.setInt(1, Integer.valueOf(sellerId));
@@ -66,11 +67,7 @@ public class ProductImp implements CRUD<Product>{
 
         String query = "SELECT * FROM Product WHERE id = ?";
 
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -104,7 +101,6 @@ public class ProductImp implements CRUD<Product>{
         String query = "SELECT * FROM Product";
 
         try (
-                Connection connection = DatabaseConnection.getConnection();
                 PreparedStatement pstmt = connection.prepareStatement(query);
                 ResultSet rs = pstmt.executeQuery();
 
@@ -139,11 +135,7 @@ public class ProductImp implements CRUD<Product>{
     public int update(int id, Product product) throws SQLException {
         String query = "UPDATE Product SET sellerID = ?, name = ?, description = ?, categoryID = ?, price = ?, stock = ? WHERE id = ?";
 
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             if (product.getSellerID() != null) {
                 pstmt.setInt(1, Integer.valueOf(product.getSellerID()));
             } else {
@@ -181,11 +173,7 @@ public class ProductImp implements CRUD<Product>{
     
         String query = "DELETE FROM Product WHERE id = ?";
     
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
             pstmt.setInt(1, id);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected;
@@ -201,11 +189,7 @@ public class ProductImp implements CRUD<Product>{
     public List<Product> getBySeller(int sellerId) throws SQLException {
         String query = "SELECT * FROM Product WHERE seller_id = ?";
     
-        try (
-                Connection connection = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = connection.prepareStatement(query);
-    
-        ) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
     
             List<Product> products = new ArrayList<>();
             pstmt.setInt(1, sellerId);
