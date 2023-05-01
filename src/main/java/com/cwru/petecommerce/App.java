@@ -131,13 +131,18 @@ public class App {
             carts.add(new Cart(10, 4, 1));
             carts.add(new Cart(10, 6, 2));
 
-            initDB();
+            /*initDB();
             insertSellers(sellers);
             insertCategories(categories);
             insertProducts(products);
             insertCustomers(customers);
             insertReviews(reviews);
             insertCarts(carts);
+            checkout(1, "Cash");
+            checkout(6, "Credit");
+            checkout(7, "Debit");*/
+            getRevenueByCategoryID(4);
+            getRevenueByCategoryID(6);
             //retrieveById();
             //retrieveAll();
             //update();
@@ -499,7 +504,7 @@ public class App {
     }
     
 
-    public void checkout(int customerID, String paymentType) throws SQLException {
+    private static void checkout(int customerID, String paymentType) throws SQLException {
         Connection connection = null;
         try {
             connection = DatabaseConnection.getConnection(); // get the database connection
@@ -567,7 +572,7 @@ public class App {
         }
     }
 
-    public void updateProductStock(int productID, int stock) throws SQLException {
+    private static void updateProductStock(int productID, int stock) throws SQLException {
 
         Connection connection = null;
         try {
@@ -590,7 +595,7 @@ public class App {
         }
     }
 
-    public void getRevenueByCategoryID(int categoryID, int stock) throws SQLException {
+    private static void getRevenueByCategoryID(int categoryID) throws SQLException {
 
         Connection connection = null;
         try {
@@ -599,7 +604,7 @@ public class App {
 
             PurchaseProductImp purchaseproductImp = new PurchaseProductImp(connection);
             int revenue = purchaseproductImp.getTotalRevenueByCategory(categoryID);
-            System.out.println(revenue);
+            System.out.println(revenue / 100);
 
             connection.commit(); // commit the transaction
         } catch (SQLException e) {
@@ -614,34 +619,4 @@ public class App {
         }
     }
     
-    
-/* 
-    private static void update() throws SQLException {
-        Pokemon pokemon = new Pokemon(1, "Pikachur", "Electric", 13.2f);
-
-        PokemonImp pokemonImp = new PokemonImp();
-
-        int result = pokemonImp.update(4, pokemon);
-
-        System.out.println(result);
-    }
-
-    private static void delete() throws SQLException {
-        PokemonImp pokemonImp = new PokemonImp();
-
-        int result = pokemonImp.delete(2);
-
-        System.out.println(result);
-    }
-
-    private static void retrieveByCategory() throws SQLException {
-        PokemonDAO pokemonImp = new PokemonImp();
-
-        List<Pokemon> pokemons = pokemonImp.getByCategory("Fire");
-
-        for (Pokemon pokemon : pokemons) {
-            System.out.println(pokemon);
-        }
-    } */
-
 }

@@ -159,7 +159,7 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
 
     // Get the total revenue for a given product category
     public int getTotalRevenueByCategory(int categoryID) throws SQLException {
-        String query = "SELECT SUM(price * quantity) as revenue " +
+        String query = "SELECT SUM(pp.price * pp.quantity) as revenue " +
                         "FROM Purchase_Product pp " +
                         "JOIN Product p ON pp.productID = p.id " +
                         "WHERE p.categoryID = ?";
