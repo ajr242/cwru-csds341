@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import com.cwru.petecommerce.utils.DatabaseConnection;
 import com.cwru.petecommerce.dao.implementation.CustomerImp;
 import com.cwru.petecommerce.models.Customer;
+import com.cwru.petecommerce.dao.implementation.ProductImp;
+import com.cwru.petecommerce.models.Product;
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 
 public class AppUI {
@@ -38,6 +40,8 @@ public class AppUI {
         
         // Create a panel to hold the buttons
         JPanel panel = new JPanel();
+
+        //Add Customer
         JButton addCustomerButton = new JButton("Add Customer");
         addCustomerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -71,6 +75,7 @@ public class AppUI {
                 formPanel.add(addressLbl);
                 formPanel.add(addressTxt);
 
+
                 // Add a button to submit the form
                 JButton submitButton = new JButton("Add Customer");
                 submitButton.addActionListener(new ActionListener() {
@@ -81,6 +86,7 @@ public class AppUI {
                         String email = emailTxt.getText();
                         String pass = passTxt.getText();
                         String address = addressTxt.getText();
+                        
                         //Add the Customer to the database
                         Customer customer = new Customer(0, firstName, lastName, email, pass, address);
                         Connection connection = null;
@@ -127,16 +133,108 @@ public class AppUI {
             }
         });
         panel.add(addCustomerButton);
+
+        //Add Product
         JButton addProductButton = new JButton("Add Product");
         addProductButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Display a new window to add a product
+                // Display a new window to add a Product
                 JFrame addProductFrame = new JFrame("Add Product");
                 addProductFrame.setSize(300, 300);
+
+                // Create a panel to hold the form elements
+                JPanel formPanel = new JPanel();
+                formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+                // Add text fields for the Product's name and email
+                JLabel sellerID = new JLabel("Seller ID:");
+                JTextField sellerIDTxt = new JTextField(10);
+                JLabel nameLbl = new JLabel("Name:");
+                JTextField nameTxt = new JTextField(10);
+                JLabel descripLbl = new JLabel("Description:");
+                JTextField descripTxt = new JTextField(10);
+                JLabel catIDLbl = new JLabel("Category ID:");
+                JTextField catIDTxt = new JTextField(10);
+                JLabel priceLbl = new JLabel("Price:");
+                JTextField priceTxt = new JTextField(10);
+                JLabel stockLbl = new JLabel("Stock:");
+                JTextField stockTxt = new JTextField(10);
+                formPanel.add(sellerID);
+                formPanel.add(sellerIDTxt);
+                formPanel.add(nameLbl);
+                formPanel.add(nameTxt);
+                formPanel.add(descripLbl);
+                formPanel.add(descripTxt);
+                formPanel.add(catIDLbl);
+                formPanel.add(catIDTxt);
+                formPanel.add(priceLbl);
+                formPanel.add(priceTxt);
+                formPanel.add(stockLbl);
+                formPanel.add(stockTxt);
+                
+                // Add a button to submit the form
+                JButton submitButton = new JButton("Add Product");
+                submitButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent a) {
+                        // Get the values from the form fields and add the Product to the database
+                        int sellerID = Integer.parseInt(sellerIDTxt.getText());
+                        String name = nameTxt.getText();
+                        String descrip = descripTxt.getText();
+                        int catID = Integer.parseInt(catIDTxt.getText());
+                        int price = Integer.parseInt(priceTxt.getText());
+                        int stock = Integer.parseInt(stockTxt.getText());
+                        
+                        //Add the Product to the database
+                        Product product = new Product(0, sellerID, name, descrip, catID, price, stock);
+                        Connection connection = null;
+                        try {
+                            connection = DatabaseConnection.getConnection(); // get the database connection
+                            connection.setAutoCommit(false); // start the transaction
+                            CRUD<Product> productImp = new ProductImp(connection);
+                            int result = productImp.create(product);
+                            System.out.println(result);
+                            connection.commit();
+                        } catch (SQLException e) {
+                            if (connection != null) {
+                                try {
+                                    connection.rollback();
+                                } catch (SQLException e1) {
+                                    System.out.println("Could not add new product nor rollback. See error stack trace.");
+                                    e1.printStackTrace();
+                                } // rollback the transaction if an exception occurs
+                            }
+                            System.out.println("Could not add new product. See error stack trace.");
+                            e.printStackTrace();
+                        } finally {
+                            if (connection != null) {
+                                try {
+                                    connection.close(); // close the connection
+                                } catch (SQLException e) {
+                                    System.out.println("Connection could not close. See error stack trace.");
+                                    e.printStackTrace();
+                                } 
+                            }
+                        }
+                        
+                        
+                        // Close the "Add Product" window
+                        addProductFrame.dispose();
+                    }
+                });
+                formPanel.add(submitButton);
+
+                // Add the form panel to the window
+                addProductFrame.add(formPanel);
+
                 addProductFrame.setVisible(true);
             }
         });
         panel.add(addProductButton);
+        //
+        //
+        //
+        //
+        //
         frame.add(panel);
         
         frame.setVisible(true);
