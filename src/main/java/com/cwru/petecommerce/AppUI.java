@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import com.cwru.petecommerce.utils.DatabaseConnection;
 import com.cwru.petecommerce.dao.implementation.*;
@@ -235,7 +236,6 @@ public class AppUI {
         });
         panel.add(addProductButton);
 
-
         //Add Seller
         JButton addSellerButton = new JButton("Add Seller");
         addSellerButton.addActionListener(new ActionListener() {
@@ -393,6 +393,331 @@ public class AppUI {
             }
         });
         panel.add(addCategoryButton);
+
+
+      //Read Customer
+      JButton readCustomerButton = new JButton("Read Customer");
+      readCustomerButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to read a Customer
+              JFrame readCustomerFrame = new JFrame("Read Customer");
+              readCustomerFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Read text fields for the Customer's name and email
+              JLabel idLbl = new JLabel("Insert Customer ID:");
+              JTextField idTxt = new JTextField(10);
+              formPanel.add(idLbl);
+              formPanel.add(idTxt);
+
+              // Read a button to submit the form
+              JButton submitButton = new JButton("Read Customer");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and read the Customer to the database
+                      Integer id = Integer.parseInt(idTxt.getText());
+                      
+                      //Read the Customer to the database
+                      
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          CRUD<Customer> customerImp = new CustomerImp(connection);
+                          Optional<Customer> optionalCustomer = customerImp.getById(id);
+    
+                          if (optionalCustomer.isPresent()) {
+                              System.out.println("Customer found");
+                              Customer customer = optionalCustomer.get();
+                              System.out.println(customer);
+                          } else {
+                              System.out.println("Customer not found");
+                          }
+            
+                          connection.commit();
+                      } catch (SQLException e) {
+                          if (connection != null) {
+                              try {
+                                  connection.rollback();
+                              } catch (SQLException e1) {
+                                  System.out.println("Could not read new customer nor rollback. See error stack trace.");
+                                  e1.printStackTrace();
+                              } // rollback the transaction if an exception occurs
+                          }
+                          System.out.println("Could not read new customer. See error stack trace.");
+                          e.printStackTrace();
+                      } finally {
+                          if (connection != null) {
+                              try {
+                                  connection.close(); // close the connection
+                              } catch (SQLException e) {
+                                  System.out.println("Connection could not close. See error stack trace.");
+                                  e.printStackTrace();
+                              } 
+                          }
+                      }
+                      
+                      
+                      // Close the "Read Customer" window
+                      readCustomerFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Read the form panel to the window
+              readCustomerFrame.add(formPanel);
+
+              readCustomerFrame.setVisible(true);
+          }
+      });
+      panel.add(readCustomerButton);
+
+
+      //Read Product
+      JButton readProductButton = new JButton("Read Product");
+      readProductButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to read a Product
+              JFrame readProductFrame = new JFrame("Read Product");
+              readProductFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Read text fields for the Product's name and email
+              JLabel idLbl = new JLabel("Insert product ID:");
+              JTextField idTxt = new JTextField(10);
+              formPanel.add(idLbl);
+              formPanel.add(idTxt);
+
+              // Read a button to submit the form
+              JButton submitButton = new JButton("Read Product");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and read the Product to the database
+                      Integer id = Integer.parseInt(idTxt.getText());
+                      
+                      //Read the Product to the database
+                      
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          CRUD<Product> productImp = new ProductImp(connection);
+                          Optional<Product> optionalProduct = productImp.getById(id);
+    
+                          if (optionalProduct.isPresent()) {
+                              System.out.println("Product found");
+                              Product product = optionalProduct.get();
+                              System.out.println(product);
+                          } else {
+                              System.out.println("Product not found");
+                          }
+            
+                          connection.commit();
+                      } catch (SQLException e) {
+                          if (connection != null) {
+                              try {
+                                  connection.rollback();
+                              } catch (SQLException e1) {
+                                  System.out.println("Could not read new product nor rollback. See error stack trace.");
+                                  e1.printStackTrace();
+                              } // rollback the transaction if an exception occurs
+                          }
+                          System.out.println("Could not read new product. See error stack trace.");
+                          e.printStackTrace();
+                      } finally {
+                          if (connection != null) {
+                              try {
+                                  connection.close(); // close the connection
+                              } catch (SQLException e) {
+                                  System.out.println("Connection could not close. See error stack trace.");
+                                  e.printStackTrace();
+                              } 
+                          }
+                      }
+                      
+                      
+                      // Close the "Read Product" window
+                      readProductFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Read the form panel to the window
+              readProductFrame.add(formPanel);
+
+              readProductFrame.setVisible(true);
+          }
+      });
+      panel.add(readProductButton);
+
+
+      //Read Seller
+      JButton readSellerButton = new JButton("Read Seller");
+      readSellerButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to read a Seller
+              JFrame readSellerFrame = new JFrame("Read Seller");
+              readSellerFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Read text fields for the Seller's name and email
+              JLabel idLbl = new JLabel("First Name:");
+              JTextField idTxt = new JTextField(10);
+              formPanel.add(idLbl);
+              formPanel.add(idTxt);
+
+              // Read a button to submit the form
+              JButton submitButton = new JButton("Read Seller");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and read the Seller to the database
+                      Integer id = Integer.parseInt(idTxt.getText());
+                      
+                      //Read the Seller to the database
+                      
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          CRUD<Seller> sellerImp = new SellerImp(connection);
+                          Optional<Seller> optionalSeller = sellerImp.getById(id);
+    
+                          if (optionalSeller.isPresent()) {
+                              System.out.println("Seller found");
+                              Seller seller = optionalSeller.get();
+                              System.out.println(seller);
+                          } else {
+                              System.out.println("Seller not found");
+                          }
+            
+                          connection.commit();
+                      } catch (SQLException e) {
+                          if (connection != null) {
+                              try {
+                                  connection.rollback();
+                              } catch (SQLException e1) {
+                                  System.out.println("Could not read new seller nor rollback. See error stack trace.");
+                                  e1.printStackTrace();
+                              } // rollback the transaction if an exception occurs
+                          }
+                          System.out.println("Could not read new seller. See error stack trace.");
+                          e.printStackTrace();
+                      } finally {
+                          if (connection != null) {
+                              try {
+                                  connection.close(); // close the connection
+                              } catch (SQLException e) {
+                                  System.out.println("Connection could not close. See error stack trace.");
+                                  e.printStackTrace();
+                              } 
+                          }
+                      }
+                      
+                      
+                      // Close the "Read Seller" window
+                      readSellerFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Read the form panel to the window
+              readSellerFrame.add(formPanel);
+
+              readSellerFrame.setVisible(true);
+          }
+      });
+      panel.add(readSellerButton);
+       
+      
+      //Read Category
+      JButton readCategoryButton = new JButton("Read Category");
+      readCategoryButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to read a Category
+              JFrame readCategoryFrame = new JFrame("Read Category");
+              readCategoryFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Read text fields for the Category's name and email
+              JLabel idLbl = new JLabel("First Name:");
+              JTextField idTxt = new JTextField(10);
+              formPanel.add(idLbl);
+              formPanel.add(idTxt);
+
+              // Read a button to submit the form
+              JButton submitButton = new JButton("Read Category");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and read the Category to the database
+                      Integer id = Integer.parseInt(idTxt.getText());
+                      
+                      //Read the Category to the database
+                      
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          CRUD<Category> categoryImp = new CategoryImp(connection);
+                          Optional<Category> optionalCategory = categoryImp.getById(id);
+    
+                          if (optionalCategory.isPresent()) {
+                              System.out.println("Category found");
+                              Category category = optionalCategory.get();
+                              System.out.println(category);
+                          } else {
+                              System.out.println("Category not found");
+                          }
+            
+                          connection.commit();
+                      } catch (SQLException e) {
+                          if (connection != null) {
+                              try {
+                                  connection.rollback();
+                              } catch (SQLException e1) {
+                                  System.out.println("Could not read new category nor rollback. See error stack trace.");
+                                  e1.printStackTrace();
+                              } // rollback the transaction if an exception occurs
+                          }
+                          System.out.println("Could not read new category. See error stack trace.");
+                          e.printStackTrace();
+                      } finally {
+                          if (connection != null) {
+                              try {
+                                  connection.close(); // close the connection
+                              } catch (SQLException e) {
+                                  System.out.println("Connection could not close. See error stack trace.");
+                                  e.printStackTrace();
+                              } 
+                          }
+                      }
+                      
+                      
+                      // Close the "Read Category" window
+                      readCategoryFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Read the form panel to the window
+              readCategoryFrame.add(formPanel);
+
+              readCategoryFrame.setVisible(true);
+          }
+      });
+      panel.add(readCategoryButton);
+
 
         //
         //
