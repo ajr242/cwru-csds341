@@ -742,6 +742,382 @@ public class AppUI {
       });
       panel.add(readCategoryButton);
 
+      //Update Customer
+      JButton updateCustomerButton = new JButton("Update Customer");
+      updateCustomerButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Customer
+              JFrame updateCustomerFrame = new JFrame("Update Customer");
+              updateCustomerFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Customer's name and email
+              JLabel idLbl = new JLabel("Customer ID:");
+              JTextField idTxt = new JTextField(10);
+              JLabel firstNameLbl = new JLabel("New First Name:");
+              JTextField firstNameTxt = new JTextField(10);
+              JLabel lastNameLbl = new JLabel("New Last Name:");
+              JTextField lastNameTxt = new JTextField(10);
+              JLabel emailLbl = new JLabel("New Email:");
+              JTextField emailTxt = new JTextField(10);
+              JLabel passLbl = new JLabel("New Password:");
+              JTextField passTxt = new JTextField(10);
+              JLabel addressLbl = new JLabel("New Address:");
+              JTextField addressTxt = new JTextField(10);
+              formPanel.add(idLbl);
+              formPanel.add(idTxt);
+              formPanel.add(firstNameLbl);
+              formPanel.add(firstNameTxt);
+              formPanel.add(lastNameLbl);
+              formPanel.add(lastNameTxt);
+              formPanel.add(emailLbl);
+              formPanel.add(emailTxt);
+              formPanel.add(passLbl);
+              formPanel.add(passTxt);
+              formPanel.add(addressLbl);
+              formPanel.add(addressTxt);
+
+
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Update Customer");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and add the Customer to the database
+                      Integer id = Integer.parseInt(idTxt.getText());
+                      String firstName = firstNameTxt.getText();
+                      String lastName = lastNameTxt.getText();
+                      String email = emailTxt.getText();
+                      String pass = passTxt.getText();
+                      String address = addressTxt.getText();
+                      
+                      //Update the Customer to the database
+                      Customer customer = new Customer(0, firstName, lastName, email, pass, address);
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          CRUD<Customer> customerImp = new CustomerImp(connection);
+                          int result = customerImp.update(id, customer);
+                          System.out.println(result);
+                          connection.commit();
+                      } catch (SQLException e) {
+                          if (connection != null) {
+                              try {
+                                  connection.rollback();
+                              } catch (SQLException e1) {
+                                  System.out.println("Could not update new customer nor rollback. See error stack trace.");
+                                  e1.printStackTrace();
+                              } // rollback the transaction if an exception occurs
+                          }
+                          System.out.println("Could not update new customer. See error stack trace.");
+                          e.printStackTrace();
+                      } finally {
+                          if (connection != null) {
+                              try {
+                                  connection.close(); // close the connection
+                              } catch (SQLException e) {
+                                  System.out.println("Connection could not close. See error stack trace.");
+                                  e.printStackTrace();
+                              } 
+                          }
+                      }
+                      
+                      
+                      // Close the "Update Customer" window
+                      updateCustomerFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              updateCustomerFrame.add(formPanel);
+
+              updateCustomerFrame.setVisible(true);
+          }
+      });
+      panel.add(updateCustomerButton);
+
+      //Update Product
+      JButton updateProductButton = new JButton("Update Product");
+      updateProductButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Product
+              JFrame updateProductFrame = new JFrame("Update Product");
+              updateProductFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Product's name and email
+              JLabel idLbl = new JLabel("Product ID:");
+              JTextField idTxt = new JTextField(10);
+              JLabel sellerID = new JLabel("Seller ID (0 if null):");
+              JTextField sellerIDTxt = new JTextField(10);
+              JLabel nameLbl = new JLabel("Name:");
+              JTextField nameTxt = new JTextField(10);
+              JLabel descripLbl = new JLabel("Description:");
+              JTextField descripTxt = new JTextField(10);
+              JLabel catIDLbl = new JLabel("Category ID (0 if null):");
+              JTextField catIDTxt = new JTextField(10);
+              JLabel priceLbl = new JLabel("Price:");
+              JTextField priceTxt = new JTextField(10);
+              JLabel stockLbl = new JLabel("Stock:");
+              JTextField stockTxt = new JTextField(10);
+              formPanel.add(idLbl);
+              formPanel.add(idTxt);
+              formPanel.add(sellerID);
+              formPanel.add(sellerIDTxt);
+              formPanel.add(nameLbl);
+              formPanel.add(nameTxt);
+              formPanel.add(descripLbl);
+              formPanel.add(descripTxt);
+              formPanel.add(catIDLbl);
+              formPanel.add(catIDTxt);
+              formPanel.add(priceLbl);
+              formPanel.add(priceTxt);
+              formPanel.add(stockLbl);
+              formPanel.add(stockTxt);
+              
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Update Product");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and update the Product to the database
+                      Integer id = Integer.parseInt(idTxt.getText());
+                      Integer sellerID = Integer.parseInt(sellerIDTxt.getText());
+                      if (sellerID == 0){
+                          sellerID = null;
+                      }
+                      String name = nameTxt.getText();
+                      String descrip = descripTxt.getText();
+                      Integer catID = Integer.parseInt(catIDTxt.getText());
+                      if (catID == 0){
+                          catID = null;
+                      }
+                      Integer price = Integer.parseInt(priceTxt.getText());
+                      Integer stock = Integer.parseInt(stockTxt.getText());
+                      
+                      //Update the Product to the database
+                      Product product = new Product(0, sellerID, name, descrip, catID, price, stock);
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          CRUD<Product> productImp = new ProductImp(connection);
+                          int result = productImp.update(id, product);
+                          System.out.println(result);
+                          connection.commit();
+                      } catch (SQLException e) {
+                          if (connection != null) {
+                              try {
+                                  connection.rollback();
+                              } catch (SQLException e1) {
+                                  System.out.println("Could not update new product nor rollback. See error stack trace.");
+                                  e1.printStackTrace();
+                              } // rollback the transaction if an exception occurs
+                          }
+                          System.out.println("Could not update new product. See error stack trace.");
+                          e.printStackTrace();
+                      } finally {
+                          if (connection != null) {
+                              try {
+                                  connection.close(); // close the connection
+                              } catch (SQLException e) {
+                                  System.out.println("Connection could not close. See error stack trace.");
+                                  e.printStackTrace();
+                              } 
+                          }
+                      }
+                      
+                      
+                      // Close the "Update Product" window
+                      updateProductFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              updateProductFrame.add(formPanel);
+
+              updateProductFrame.setVisible(true);
+          }
+      });
+      panel.add(updateProductButton);
+
+      //Update Seller
+      JButton updateSellerButton = new JButton("Update Seller");
+      updateSellerButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Seller
+              JFrame updateSellerFrame = new JFrame("Update Seller");
+              updateSellerFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Seller's name and email
+              JLabel idLbl = new JLabel("Seller ID:");
+              JTextField idTxt = new JTextField(10);
+              JLabel nameLbl = new JLabel("Name:");
+              JTextField nameTxt = new JTextField(10);
+              JLabel emailLbl = new JLabel("Email:");
+              JTextField emailTxt = new JTextField(10);
+              formPanel.add(idLbl);
+              formPanel.add(idTxt);
+              formPanel.add(nameLbl);
+              formPanel.add(nameTxt);
+              formPanel.add(emailLbl);
+              formPanel.add(emailTxt);
+              
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Update Seller");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and update the Seller to the database
+                      Integer id = Integer.parseInt(idTxt.getText());
+                      String name = nameTxt.getText();
+                      String email = emailTxt.getText();
+                      
+                      //Update the Seller to the database
+                      Seller seller = new Seller(0, name, email);
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          CRUD<Seller> sellerImp = new SellerImp(connection);
+                          int result = sellerImp.update(id, seller);
+                          System.out.println(result);
+                          connection.commit();
+                      } catch (SQLException e) {
+                          if (connection != null) {
+                              try {
+                                  connection.rollback();
+                              } catch (SQLException e1) {
+                                  System.out.println("Could not update new seller nor rollback. See error stack trace.");
+                                  e1.printStackTrace();
+                              } // rollback the transaction if an exception occurs
+                          }
+                          System.out.println("Could not update new seller. See error stack trace.");
+                          e.printStackTrace();
+                      } finally {
+                          if (connection != null) {
+                              try {
+                                  connection.close(); // close the connection
+                              } catch (SQLException e) {
+                                  System.out.println("Connection could not close. See error stack trace.");
+                                  e.printStackTrace();
+                              } 
+                          }
+                      }
+                      
+                      
+                      // Close the "Update Seller" window
+                      updateSellerFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              updateSellerFrame.add(formPanel);
+
+              updateSellerFrame.setVisible(true);
+          }
+      });
+      panel.add(updateSellerButton);
+
+      //Update Category
+      JButton updateCategoryButton = new JButton("Update Category");
+      updateCategoryButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Category
+              JFrame updateCategoryFrame = new JFrame("Update Category");
+              updateCategoryFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Category's name and email
+              JLabel idLbl = new JLabel("Category ID:");
+              JTextField idTxt = new JTextField(10);
+              JLabel nameLbl = new JLabel("Name:");
+              JTextField nameTxt = new JTextField(10);
+              JLabel parentCatIDLbl = new JLabel("Parent Cat ID (0 if null):");
+              JTextField parentCatIDTxt = new JTextField(10);
+              formPanel.add(idLbl);
+              formPanel.add(idTxt);           
+              formPanel.add(nameLbl);
+              formPanel.add(nameTxt);
+              formPanel.add(parentCatIDLbl);
+              formPanel.add(parentCatIDTxt);
+              
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Update Category");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and update the Category to the database
+                      Integer id = Integer.parseInt(idTxt.getText());
+                      String name = nameTxt.getText();
+                      Integer parentCatID = Integer.parseInt(parentCatIDTxt.getText());
+                      if(parentCatID == 0){
+                          parentCatID = null;
+                      }
+
+                      //Update the Category to the database
+                      Category category = new Category(0, name, parentCatID);
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          CRUD<Category> categoryImp = new CategoryImp(connection);
+                          int result = categoryImp.update(id, category);
+                          System.out.println(result);
+                          connection.commit();
+                      } catch (SQLException e) {
+                          if (connection != null) {
+                              try {
+                                  connection.rollback();
+                              } catch (SQLException e1) {
+                                  System.out.println("Could not update new category nor rollback. See error stack trace.");
+                                  e1.printStackTrace();
+                              } // rollback the transaction if an exception occurs
+                          }
+                          System.out.println("Could not update new category. See error stack trace.");
+                          e.printStackTrace();
+                      } finally {
+                          if (connection != null) {
+                              try {
+                                  connection.close(); // close the connection
+                              } catch (SQLException e) {
+                                  System.out.println("Connection could not close. See error stack trace.");
+                                  e.printStackTrace();
+                              } 
+                          }
+                      }
+                      
+                      
+                      // Close the "Update Category" window
+                      updateCategoryFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              updateCategoryFrame.add(formPanel);
+
+              updateCategoryFrame.setVisible(true);
+          }
+      });
+      panel.add(updateCategoryButton);
+
+
+
+
 
         //
         //
