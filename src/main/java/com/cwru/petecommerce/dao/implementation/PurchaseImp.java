@@ -120,7 +120,7 @@ public class PurchaseImp implements CRUD<Purchase> {
             pstmt.setDate(3, new java.sql.Date(purchase.getDate().getTime()));
             pstmt.setInt(4, purchase.getCustomerID());
             pstmt.setBoolean(5, purchase.isDelivered());
-            pstmt.setInt(6, purchase.getId());
+            pstmt.setInt(6, id);
 
             int result = pstmt.executeUpdate();
 
