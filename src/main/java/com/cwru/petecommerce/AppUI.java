@@ -145,13 +145,13 @@ public class AppUI {
                 formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
 
                 // Add text fields for the Product's name and email
-                JLabel sellerID = new JLabel("Seller ID:");
+                JLabel sellerID = new JLabel("Seller ID (0 if null):");
                 JTextField sellerIDTxt = new JTextField(10);
                 JLabel nameLbl = new JLabel("Name:");
                 JTextField nameTxt = new JTextField(10);
                 JLabel descripLbl = new JLabel("Description:");
                 JTextField descripTxt = new JTextField(10);
-                JLabel catIDLbl = new JLabel("Category ID:");
+                JLabel catIDLbl = new JLabel("Category ID (0 if null):");
                 JTextField catIDTxt = new JTextField(10);
                 JLabel priceLbl = new JLabel("Price:");
                 JTextField priceTxt = new JTextField(10);
@@ -306,6 +306,87 @@ public class AppUI {
             }
         });
         panel.add(addSellerButton);
+
+        //Add Category
+        JButton addCategoryButton = new JButton("Add Category");
+        addCategoryButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Display a new window to add a Category
+                JFrame addCategoryFrame = new JFrame("Add Category");
+                addCategoryFrame.setSize(300, 300);
+
+                // Create a panel to hold the form elements
+                JPanel formPanel = new JPanel();
+                formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+                // Add text fields for the Category's name and email
+                JLabel nameLbl = new JLabel("Name:");
+                JTextField nameTxt = new JTextField(10);
+                JLabel parentCatIDLbl = new JLabel("Parent Cat ID (0 if null):");
+                JTextField parentCatIDTxt = new JTextField(10);
+                            
+                formPanel.add(nameLbl);
+                formPanel.add(nameTxt);
+                formPanel.add(parentCatIDLbl);
+                formPanel.add(parentCatIDTxt);
+                
+                // Add a button to submit the form
+                JButton submitButton = new JButton("Add Category");
+                submitButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent a) {
+                        // Get the values from the form fields and add the Category to the database
+                        String name = nameTxt.getText();
+                        Integer parentCatID = Integer.parseInt(parentCatIDTxt.getText());
+                        if(parentCatID == 0){
+                            parentCatID = null;
+                        }
+
+                        //Add the Category to the database
+                        Category category = new Category(0, name, parentCatID);
+                        Connection connection = null;
+                        try {
+                            connection = DatabaseConnection.getConnection(); // get the database connection
+                            connection.setAutoCommit(false); // start the transaction
+                            CRUD<Category> categoryImp = new CategoryImp(connection);
+                            int result = categoryImp.create(category);
+                            System.out.println(result);
+                            connection.commit();
+                        } catch (SQLException e) {
+                            if (connection != null) {
+                                try {
+                                    connection.rollback();
+                                } catch (SQLException e1) {
+                                    System.out.println("Could not add new category nor rollback. See error stack trace.");
+                                    e1.printStackTrace();
+                                } // rollback the transaction if an exception occurs
+                            }
+                            System.out.println("Could not add new category. See error stack trace.");
+                            e.printStackTrace();
+                        } finally {
+                            if (connection != null) {
+                                try {
+                                    connection.close(); // close the connection
+                                } catch (SQLException e) {
+                                    System.out.println("Connection could not close. See error stack trace.");
+                                    e.printStackTrace();
+                                } 
+                            }
+                        }
+                        
+                        
+                        // Close the "Add Category" window
+                        addCategoryFrame.dispose();
+                    }
+                });
+                formPanel.add(submitButton);
+
+                // Add the form panel to the window
+                addCategoryFrame.add(formPanel);
+
+                addCategoryFrame.setVisible(true);
+            }
+        });
+        panel.add(addCategoryButton);
 
         //
         //
