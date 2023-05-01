@@ -1619,7 +1619,7 @@ public class AppUI {
       panel.add(checkoutButton);
 
 
-                //Products by Seller UI
+     //Products by Seller UI
       JButton productsBySellerButton = new JButton("Products by Seller");
       productsBySellerButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {

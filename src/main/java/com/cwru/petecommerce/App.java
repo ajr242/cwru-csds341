@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Scanner;
+import java.util.Scanner;]
 
 import com.cwru.petecommerce.dao.abstraction.CRUD;
 import com.cwru.petecommerce.dao.abstraction.CRUDComposite;
@@ -81,7 +81,14 @@ public class App {
                 + "BEGIN "
                 + "CREATE TABLE Purchase_Product (purchaseID INT, productID INT, price INT, quantity INT, PRIMARY KEY (purchaseID, productID), FOREIGN KEY (purchaseID) REFERENCES Purchase(id), FOREIGN KEY (productID) REFERENCES Product(id)) "
                 + "END";
-        
+        String catDeleteTrigger =  "CREATE TRIGGER delete_children_categories "
+                + "AFTER DELETE ON Cateogry "
+                + "FOR EACH ROW "
+                + "BEGIN "
+                + "DELETE FROM Category"
+                + "WHERE parentCatID = OLD.categoryID; "
+                + "END;";
+
         try {
             initDatabase.createTable(customerTableQuery);
             initDatabase.createTable(categoryTableQuery);
@@ -91,6 +98,7 @@ public class App {
             initDatabase.createTable(purchaseTableQuery);
             initDatabase.createTable(reviewTableQuery);
             initDatabase.createTable(purchaseProductTableQuery);
+            initDatabase.createTrigger(catDeleteTrigger);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
