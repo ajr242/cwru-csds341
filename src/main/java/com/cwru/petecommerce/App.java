@@ -141,16 +141,23 @@ public class App {
             checkout(1, "Cash");
             checkout(6, "Credit");
             checkout(7, "Debit");*/
+            System.out.println("Revenue by category");
             getRevenueByCategoryID(4);
-            getRevenueByCategoryID(6);
-            getRevenueByCategoryID(1);
+            getRevenueByCategoryID(2);
 
+            System.out.println("5 best selling products");
             getBestSellingProducts(5);
-            //retrieveById();
-            //retrieveAll();
-            //update();
-            //delete();
-            //retrieveByCategory();
+
+            System.out.println("5 best reviewed products");
+            getBestReviewedProducts(5);
+
+            System.out.println("1 and 2 star products (avg)");
+            filterByAvgRating(1,2);
+
+            System.out.println("Revenue earned today");
+            Date today = new Date();
+            getRevenueByDateRange(today, today);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -607,7 +614,7 @@ public class App {
 
             PurchaseProductImp purchaseproductImp = new PurchaseProductImp(connection);
             int revenue = purchaseproductImp.getTotalRevenueByCategory(categoryID);
-            System.out.println(revenue / 100);
+            System.out.println((double) revenue / 100);
 
             connection.commit(); // commit the transaction
         } catch (SQLException e) {
@@ -649,4 +656,82 @@ public class App {
         }
     }
     
+    private static void getBestReviewedProducts(int numProducts) throws SQLException {
+
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+
+            ProductImp productImp = new ProductImp(connection);
+            List<Product> best_products = productImp.getBestReviewedProducts(numProducts);
+            
+            for (Product prod : best_products) {
+                System.out.println(prod);
+            }
+            
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
+    }
+
+    private static void filterByAvgRating(int minRating, int maxRating) throws SQLException {
+
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+
+            ProductImp productImp = new ProductImp(connection);
+            List<Product> best_products = productImp.filterByAvgRating(minRating, maxRating);
+            
+            for (Product prod : best_products) {
+                System.out.println(prod);
+            }
+            
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
+    }
+    
+    private static void getRevenueByDateRange(Date startDate, Date endDate) throws SQLException {
+
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+
+            PurchaseProductImp purchaseProductImp = new PurchaseProductImp(connection);
+            int revenue = purchaseProductImp.getRevenueByDateRange(startDate, endDate);
+            
+            System.out.println(revenue);
+            
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
+    }
 }

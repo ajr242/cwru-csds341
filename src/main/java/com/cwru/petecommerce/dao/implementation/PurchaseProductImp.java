@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -179,4 +180,27 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
             throw e;
         }
     }
+
+    public int getRevenueByDateRange(Date startDate, Date endDate) throws SQLException {
+        String query = "SELECT SUM(pp.price * pp.quantity) as totalRevenue " +
+                        "FROM Purchase_Product pp " +
+                        "JOIN Purchase p ON pp.purchaseID = p.id " +
+                        "WHERE p.date >= ? AND p.date <= ?";
+    
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setDate(1, new java.sql.Date(startDate.getTime()));
+            pstmt.setDate(2, new java.sql.Date(startDate.getTime()));
+    
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("totalRevenue");
+            } else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
 }

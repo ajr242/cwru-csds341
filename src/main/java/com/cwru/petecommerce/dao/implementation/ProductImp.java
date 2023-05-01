@@ -307,4 +307,76 @@ public class ProductImp implements CRUD<Product>{
             throw e;
         }
     }
+
+    public List<Product> getBestReviewedProducts(int numProducts) throws SQLException {
+        String query = "SELECT TOP (?) p.*, AVG(r.rating) as avgRating " +
+                        "FROM Product p " +
+                        "JOIN Review r ON p.id = r.productID " +
+                        "GROUP BY p.id, p.name, p.sellerID, p.description, p.categoryID, p.price, p.stock " +
+                        "ORDER BY avgRating DESC";
+    
+        List<Product> bestReviewedProducts = new ArrayList<>();
+    
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
+            pstmt.setInt(1, numProducts);
+    
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int sellerID = rs.getInt("sellerID");
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                int categoryID = rs.getInt("categoryID");
+                int stock = rs.getInt("stock");
+                String description = rs.getString("description");
+                double avgRating = rs.getDouble("avgRating");
+    
+                Product product = new Product(id, sellerID, name, description, categoryID, price, stock);
+                bestReviewedProducts.add(product);
+            }
+    
+            return bestReviewedProducts;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public List<Product> filterByAvgRating(int minRating, int maxRating) throws SQLException {
+        String query = "SELECT p.*, AVG(r.rating) as avgRating " +
+                        "FROM Product p " +
+                        "JOIN Review r ON p.id = r.productID " +
+                        "GROUP BY p.id, p.name, p.sellerID, p.description, p.categoryID, p.price, p.stock " +
+                        "HAVING AVG(r.rating) >= ? AND AVG(r.rating) <= ? " +
+                        "ORDER BY p.id ASC";
+        
+        List<Product> filteredProducts = new ArrayList<>();
+        
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
+            pstmt.setInt(1, minRating);
+            pstmt.setInt(2, maxRating);
+        
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int sellerID = rs.getInt("sellerID");
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                int categoryID = rs.getInt("categoryID");
+                int stock = rs.getInt("stock");
+                String description = rs.getString("description");
+                double avgRating = rs.getDouble("avgRating");
+        
+                Product product = new Product(id, sellerID, name, description, categoryID, price, stock);
+                filteredProducts.add(product);
+            }
+        
+            return filteredProducts;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
+    
 }
