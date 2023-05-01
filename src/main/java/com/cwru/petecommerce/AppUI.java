@@ -277,7 +277,7 @@ public class AppUI {
                 submitButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent a) {
                         // Get the values from the form fields and add the Review to the database
-                        Integer productID = Integer.parseInt(prductIDTxt.getText());
+                        Integer productID = Integer.parseInt(productIDTxt.getText());
                         if (productID == 0){
                             productID = null;
                         }
@@ -285,7 +285,7 @@ public class AppUI {
                         if (customerID == 0){
                             customerID = null;
                         }
-                        String rating = ratingTxt.getText();
+                        Integer rating = Integer.parseInt(ratingTxt.getText());
                         String descrip = descripTxt.getText();
                         Date date = new Date();
                         
