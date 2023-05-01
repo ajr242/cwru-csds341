@@ -1,4 +1,4 @@
-package com.cwru.petecommerce.dao.implementation;
+package main.java.com.cwru.petecommerce.dao.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
