@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.List;
 import java.util.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import com.cwru.petecommerce.utils.DatabaseConnection;
 import com.cwru.petecommerce.dao.implementation.*;
@@ -437,7 +439,7 @@ public class AppUI {
                            formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
                           if (optionalCustomer.isPresent()) {
                               Customer customer = optionalCustomer.get();
-                              JLabel found = new JLabel("Customer found. " + customer);
+                              JLabel found = new JLabel("Customer found. " + customer.toString());
                               formPanel1.add(found);
                           } else {
                             JLabel found = new JLabel("Customer not found");
@@ -524,7 +526,7 @@ public class AppUI {
                            formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
                           if (optionalProduct.isPresent()) {
                               Product product = optionalProduct.get();
-                              JLabel found = new JLabel("Product found. " + product);
+                              JLabel found = new JLabel("Product found. " + product.toString());
                               formPanel1.add(found);
                           } else {
                             JLabel found = new JLabel("Product not found");
@@ -611,7 +613,7 @@ public class AppUI {
                           formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
                           if (optionalSeller.isPresent()) {                      
                               Seller seller = optionalSeller.get();
-                              JLabel sellerFound = new JLabel("Seller found" + seller);
+                              JLabel sellerFound = new JLabel("Seller found" + seller.toString());
                               formPanel1.add(sellerFound);
                           } else {
                               JLabel sellerFound = new JLabel("Seller not found");
@@ -698,7 +700,7 @@ public class AppUI {
                            formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
                           if (optionalCategory.isPresent()) {
                               Category category = optionalCategory.get();
-                              JLabel found = new JLabel("Category found. " + category);
+                              JLabel found = new JLabel("Category found. " + category.toString());
                               formPanel1.add(found);
                           } else {
                             JLabel found = new JLabel("Category not found");
@@ -1607,9 +1609,92 @@ public class AppUI {
 
               checkoutFrame.setVisible(true);
           }
+
+          
+
       });
       panel.add(checkoutButton);
 
+
+                //Products by Seller UI
+      JButton productsBySellerButton = new JButton("Products by Seller");
+      productsBySellerButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Product
+              JFrame productsBySellerFrame = new JFrame("Products by Seller");
+              productsBySellerFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Product's name and email
+              JLabel sellerIDLbl = new JLabel("Seller ID:");
+              JTextField sellerIdTxt = new JTextField(10);
+              formPanel.add(sellerIDLbl);
+              formPanel.add(sellerIdTxt);
+              
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Products by Seller");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and update the Product to the database
+                      Integer sellerID = Integer.parseInt(sellerIdTxt.getText());
+                      
+                      
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          
+                          // create the cart
+                          ProductImp productImp = new ProductImp(connection);
+                          List<Product> result = productImp.getAllbySellerID(sellerID); // pass the connection to the create method
+                          
+                          JFrame readFrame1 = new JFrame("Category Information");
+                          readFrame1.setSize(500, 150);
+                           JPanel formPanel1 = new JPanel();
+                           formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
+                           for (Product p : result){
+                                JLabel found = new JLabel(p.toString());
+                                formPanel1.add(found);
+                           }
+                        readFrame1.add(formPanel1);
+                        readFrame1.setVisible(true);
+                          connection.commit(); // commit the transaction
+                      } catch (SQLException e) {
+                        if (connection != null) {
+                            try {
+                                connection.rollback();
+                            } catch (SQLException e1) {
+                                System.out.println("See error stack trace.");
+                                e1.printStackTrace();
+                            } // rollback the transaction if an exception occurs
+                        }
+                      } finally {
+                        if (connection != null) {
+                            try {
+                                connection.close(); // close the connection
+                            } catch (SQLException e) {
+                                System.out.println("Connection could not close. See error stack trace.");
+                                e.printStackTrace();
+                            } 
+                        }
+                      }
+                      
+                      // Close the "Add to Cart" window
+                      productsBySellerFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              productsBySellerFrame.add(formPanel);
+
+              productsBySellerFrame.setVisible(true);
+          }
+      });
+      panel.add(productsBySellerButton);
 
         //
         //
