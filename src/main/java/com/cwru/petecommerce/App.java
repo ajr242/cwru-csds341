@@ -27,8 +27,8 @@ public class App {
 
         try {
             initDB();
-            insertProduct();
-            insertProductUI();
+            //insertProduct();
+            //insertProductUI();
             //retrieveById();
             //retrieveAll();
             //update();
@@ -64,7 +64,7 @@ public class App {
         
         String cartTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Cart' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Cart (customerID INT, productID INT, quantity INT, FOREIGN KEY (customerID) REFERENCES Customer(id), FOREIGN KEY (productID) REFERENCES Product(id)) "
+                + "CREATE TABLE Cart (customerID INT, productID INT, quantity INT, PRIMARY KEY (customerID, productID), FOREIGN KEY (customerID) REFERENCES Customer(id), FOREIGN KEY (productID) REFERENCES Product(id)) "
                 + "END";
         
         String purchaseTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Purchase' AND xtype='U') "
@@ -79,7 +79,7 @@ public class App {
         
         String purchaseProductTableQuery = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Purchase_Product' AND xtype='U') "
                 + "BEGIN "
-                + "CREATE TABLE Purchase_Product (purchaseID INT, productID INT, price INT, quantity INT, FOREIGN KEY (purchaseID) REFERENCES Purchase(id), FOREIGN KEY (productID) REFERENCES Product(id)) "
+                + "CREATE TABLE Purchase_Product (purchaseID INT, productID INT, price INT, quantity INT, PRIMARY KEY (purchaseID, productID), FOREIGN KEY (purchaseID) REFERENCES Purchase(id), FOREIGN KEY (productID) REFERENCES Product(id)) "
                 + "END";
         
         try {
@@ -310,7 +310,8 @@ public class App {
             
             // delete all items in customer's cart
             cartImp.deleteAllByCustomerID(customerID);
-
+            
+            connection.commit(); // commit the transaction
         } catch (SQLException e) {
             if (connection != null) {
                 connection.rollback(); // rollback the transaction if an exception occurs
