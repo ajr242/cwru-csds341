@@ -267,4 +267,36 @@ public class ProductImp implements CRUD<Product>{
         }
     }    
     
+    public List<Product> getBestSellingProducts(int numProducts) throws SQLException {
+        String query = "SELECT TOP (?) p.*, SUM(pp.quantity) as totalQuantity " +
+                        "FROM Purchase_Product pp " +
+                        "JOIN Product p ON pp.productID = p.id " +
+                        "GROUP BY p.id, p.name, p.sellerID, p.description, p.categoryID, p.price, p.stock " +
+                        "ORDER BY totalQuantity DESC";
+
+        List<Product> bestSellingProducts = new ArrayList<>();
+    
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
+            pstmt.setInt(1, numProducts);
+    
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int sellerID = rs.getInt("sellerID");
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                int categoryID = rs.getInt("categoryID");
+                int stock = rs.getInt("stock");
+                String description = rs.getString("description");
+
+                Product product = new Product(id, sellerID, name, description, categoryID, price, stock);
+                bestSellingProducts.add(product);
+            }
+    
+            return bestSellingProducts;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

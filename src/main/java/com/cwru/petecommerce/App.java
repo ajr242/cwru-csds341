@@ -143,6 +143,9 @@ public class App {
             checkout(7, "Debit");*/
             getRevenueByCategoryID(4);
             getRevenueByCategoryID(6);
+            getRevenueByCategoryID(1);
+
+            getBestSellingProducts(5);
             //retrieveById();
             //retrieveAll();
             //update();
@@ -606,6 +609,33 @@ public class App {
             int revenue = purchaseproductImp.getTotalRevenueByCategory(categoryID);
             System.out.println(revenue / 100);
 
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
+    }
+
+    private static void getBestSellingProducts(int numProducts) throws SQLException {
+
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+
+            ProductImp productImp = new ProductImp(connection);
+            List<Product> best_products = productImp.getBestSellingProducts(numProducts);
+            
+            for (Product prod : best_products) {
+                System.out.println(prod);
+            }
+            
             connection.commit(); // commit the transaction
         } catch (SQLException e) {
             if (connection != null) {
