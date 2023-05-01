@@ -156,4 +156,27 @@ public class PurchaseProductImp implements CRUDComposite<PurchaseProduct> {
             throw e;
         }
     }
+
+    // Get the total revenue for a given product category
+    public int getTotalRevenueByCategory(int categoryID) throws SQLException {
+        String query = "SELECT SUM(price * quantity) as revenue " +
+                        "FROM Purchase_Product pp " +
+                        "JOIN Product p ON pp.productID = p.id " +
+                        "WHERE p.categoryID = ?";
+        int totalRevenue = 0;
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query);) {
+            pstmt.setInt(1, categoryID);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                totalRevenue = rs.getInt("revenue");
+            }
+
+            return totalRevenue;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

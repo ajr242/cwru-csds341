@@ -310,7 +310,54 @@ public class App {
             
             // delete all items in customer's cart
             cartImp.deleteAllByCustomerID(customerID);
-            
+
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
+    }
+
+    public void updateProductStock(int productID, int stock) throws SQLException {
+
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+
+            ProductImp productImp = new ProductImp(connection);
+            productImp.updateStock(productID, stock);
+
+            connection.commit(); // commit the transaction
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback(); // rollback the transaction if an exception occurs
+            }
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.close(); // close the connection
+            }
+        }
+    }
+
+    public void getRevenueByCategoryID(int categoryID, int stock) throws SQLException {
+
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection(); // get the database connection
+            connection.setAutoCommit(false); // start the transaction
+
+            PurchaseProductImp purchaseproductImp = new PurchaseProductImp(connection);
+            int revenue = purchaseproductImp.getTotalRevenueByCategory(categoryID);
+            System.out.println(revenue);
+
             connection.commit(); // commit the transaction
         } catch (SQLException e) {
             if (connection != null) {
