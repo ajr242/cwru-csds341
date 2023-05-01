@@ -590,15 +590,15 @@ public class AppUI {
                           connection.setAutoCommit(false); // start the transaction
                           CRUD<Seller> sellerImp = new SellerImp(connection);
                           Optional<Seller> optionalSeller = sellerImp.getById(id);
-
+                          JPanel formPanel1 = new JPanel();
                           if (optionalSeller.isPresent()) {                      
                               Seller seller = optionalSeller.get();
                               JLabel sellerFound = new JLabel("Seller found" + seller);
-                              formPanel.add(sellerFound);
+                              formPanel1.add(sellerFound);
 
                           } else {
                               JLabel sellerFound = new JLabel("Seller not found");
-                              formPanel.add(sellerFound);
+                              formPanel1.add(sellerFound);
 
                           }
 
