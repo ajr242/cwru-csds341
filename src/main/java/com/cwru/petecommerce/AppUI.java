@@ -241,6 +241,101 @@ public class AppUI {
         });
         panel.add(addProductButton);
 
+        //Add Review
+        JButton addReviewButton = new JButton("Add Review");
+        addReviewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Display a new window to add a Review
+                JFrame addReviewFrame = new JFrame("Add Review");
+                addReviewFrame.setSize(300, 300);
+
+                // Create a panel to hold the form elements
+                JPanel formPanel = new JPanel();
+                formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+                // Add text fields for the Review
+                JLabel productID = new JLabel("Product ID (0 if null):");
+                JTextField productIDTxt = new JTextField(10);
+                JLabel customerID = new JLabel("Customer ID (0 if null):");
+                JTextField customerIDTxt = new JTextField(10);
+                JLabel ratingLbl = new JLabel("Rating:");
+                JTextField ratingTxt = new JTextField(10);
+                JLabel descripLbl = new JLabel("Description:");
+                JTextField descripTxt = new JTextField(10);
+                
+                formPanel.add(productID);
+                formPanel.add(productIDTxt);
+                formPanel.add(customerID);
+                formPanel.add(customerIDTxt);
+                formPanel.add(ratingLbl);
+                formPanel.add(ratingTxt);
+                formPanel.add(descripLbl);
+                formPanel.add(descripTxt);
+                
+                // Add a button to submit the form
+                JButton submitButton = new JButton("Add Review");
+                submitButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent a) {
+                        // Get the values from the form fields and add the Review to the database
+                        Integer productID = Integer.parseInt(prductIDTxt.getText());
+                        if (productID == 0){
+                            productID = null;
+                        }
+                        Integer customerID = Integer.parseInt(customerIDTxt.getText());
+                        if (customerID == 0){
+                            customerID = null;
+                        }
+                        String rating = ratingTxt.getText();
+                        String descrip = descripTxt.getText();
+                        Date date = new Date();
+                        
+                        //Add the Review to the database
+                        Review review = new Review(0, date, productID, customerID, rating, descrip);
+                        Connection connection = null;
+                        try {
+                            connection = DatabaseConnection.getConnection(); // get the database connection
+                            connection.setAutoCommit(false); // start the transaction
+                            CRUD<Review> reviewImp = new ReviewImp(connection);
+                            int result = reviewImp.create(review);
+                            System.out.println(result);
+                            connection.commit();
+                        } catch (SQLException e) {
+                            if (connection != null) {
+                                try {
+                                    connection.rollback();
+                                } catch (SQLException e1) {
+                                    System.out.println("Could not add new review nor rollback. See error stack trace.");
+                                    e1.printStackTrace();
+                                } // rollback the transaction if an exception occurs
+                            }
+                            System.out.println("Could not add new review. See error stack trace.");
+                            e.printStackTrace();
+                        } finally {
+                            if (connection != null) {
+                                try {
+                                    connection.close(); // close the connection
+                                } catch (SQLException e) {
+                                    System.out.println("Connection could not close. See error stack trace.");
+                                    e.printStackTrace();
+                                } 
+                            }
+                        }
+                        
+                        
+                        // Close the "Add Review" window
+                        addReviewFrame.dispose();
+                    }
+                });
+                formPanel.add(submitButton);
+
+                // Add the form panel to the window
+                addReviewFrame.add(formPanel);
+
+                addReviewFrame.setVisible(true);
+            }
+        });
+        panel.add(addReviewButton);
+
         //Add Seller
         JButton addSellerButton = new JButton("Add Seller");
         addSellerButton.addActionListener(new ActionListener() {
@@ -572,6 +667,92 @@ public class AppUI {
           }
       });
       panel.add(readProductButton);
+
+            //Read Review
+            JButton readReviewButton = new JButton("Read Review");
+            readReviewButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    // Display a new window to read a Review
+                    JFrame readReviewFrame = new JFrame("Read Review");
+                    readReviewFrame.setSize(300, 300);
+      
+                    // Create a panel to hold the form elements
+                    JPanel formPanel = new JPanel();
+                    formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+      
+                    // Read text fields for the Review's name and email
+                    JLabel idLbl = new JLabel("Insert Review ID:");
+                    JTextField idTxt = new JTextField(10);
+                    formPanel.add(idLbl);
+                    formPanel.add(idTxt);
+      
+                    // Read a button to submit the form
+                    JButton submitButton = new JButton("Read Review");
+                    submitButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent a) {
+                            // Get the values from the form fields and read the Review to the database
+                            Integer id = Integer.parseInt(idTxt.getText());
+                            
+                            //Read the Review to the database
+                            
+                            Connection connection = null;
+                            try {
+                                connection = DatabaseConnection.getConnection(); // get the database connection
+                                connection.setAutoCommit(false); // start the transaction
+                                CRUD<Review> reviewImp = new ReviewImp(connection);
+                                Optional<Review> optionalReview = reviewImp.getById(id);
+                                JFrame readFrame1 = new JFrame("Review Information");
+                                readFrame1.setSize(500, 150);
+                                 JPanel formPanel1 = new JPanel();
+                                 formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
+                                if (optionalReview.isPresent()) {
+                                    Review review = optionalReview.get();
+                                    JLabel found = new JLabel("Review found. " + review.toString());
+                                    formPanel1.add(found);
+                                } else {
+                                  JLabel found = new JLabel("Review not found");
+                                  formPanel1.add(found);
+                              }
+                              readFrame1.add(formPanel1);
+                              readFrame1.setVisible(true);
+      
+                                connection.commit();
+                            } catch (SQLException e) {
+                                if (connection != null) {
+                                    try {
+                                        connection.rollback();
+                                    } catch (SQLException e1) {
+                                        System.out.println("Could not read new review nor rollback. See error stack trace.");
+                                        e1.printStackTrace();
+                                    } // rollback the transaction if an exception occurs
+                                }
+                                System.out.println("Could not read new review. See error stack trace.");
+                                e.printStackTrace();
+                            } finally {
+                                if (connection != null) {
+                                    try {
+                                        connection.close(); // close the connection
+                                    } catch (SQLException e) {
+                                        System.out.println("Connection could not close. See error stack trace.");
+                                        e.printStackTrace();
+                                    } 
+                                }
+                            }
+                            
+                            
+                            // Close the "Read Review" window
+                            readReviewFrame.dispose();
+                        }
+                    });
+                    formPanel.add(submitButton);
+      
+                    // Read the form panel to the window
+                    readReviewFrame.add(formPanel);
+      
+                    readReviewFrame.setVisible(true);
+                }
+            });
+            panel.add(readReviewButton);
 
 
       //Read Seller
@@ -953,6 +1134,106 @@ public class AppUI {
       });
       panel.add(updateProductButton);
 
+      //Update Review
+      JButton updateReviewButton = new JButton("Update Review");
+      updateReviewButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Review
+              JFrame updateReviewFrame = new JFrame("Update Review");
+              updateReviewFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Review's name and email
+              JLabel idLbl = new JLabel("Review ID:");
+              JTextField idTxt = new JTextField(10);
+              JLabel productID = new JLabel("Product ID (0 if null):");
+              JTextField productIDTxt = new JTextField(10);
+              JLabel customerID = new JLabel("Customer ID (0 if null):");
+              JTextField customerIDTxt = new JTextField(10);
+              JLabel ratingLbl = new JLabel("Rating:");
+              JTextField ratingTxt = new JTextField(10);
+              JLabel descripLbl = new JLabel("Description:");
+              JTextField descripTxt = new JTextField(10);
+              
+              formPanel.add(idLbl);
+              formPanel.add(idTxt);
+              formPanel.add(productID);
+              formPanel.add(productIDTxt);
+              formPanel.add(customerID);
+              formPanel.add(customerIDTxt);
+              formPanel.add(ratingLbl);
+              formPanel.add(ratingTxt);
+              formPanel.add(descripLbl);
+              formPanel.add(descripTxt);
+              
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Update Review");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and update the Review to the database
+                      Integer id = Integer.parseInt(idTxt.getText());
+                      Date date = new Date();
+                      Integer productID = Integer.parseInt(productIDTxt.getText());
+                      if (productID == 0){
+                          productID = null;
+                      }
+                      Integer customerID = Integer.parseInt(customerIDTxt.getText());
+                      if (customerID == 0){
+                          customerID = null;
+                      }
+                      Integer rating = Integer.parseInt(ratingTxt.getText());
+                      String descrip = descripTxt.getText();
+                      
+                      //Update the Product to the database
+                      Review review = new Review(0, date, productID, customerID, rating, descrip);
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          CRUD<Review> reviewImp = new ReviewImp(connection);
+                          int result = reviewImp.update(id, review);
+                          System.out.println(result);
+                          connection.commit();
+                      } catch (SQLException e) {
+                          if (connection != null) {
+                              try {
+                                  connection.rollback();
+                              } catch (SQLException e1) {
+                                  System.out.println("Could not update new review nor rollback. See error stack trace.");
+                                  e1.printStackTrace();
+                              } // rollback the transaction if an exception occurs
+                          }
+                          System.out.println("Could not update new review. See error stack trace.");
+                          e.printStackTrace();
+                      } finally {
+                          if (connection != null) {
+                              try {
+                                  connection.close(); // close the connection
+                              } catch (SQLException e) {
+                                  System.out.println("Connection could not close. See error stack trace.");
+                                  e.printStackTrace();
+                              } 
+                          }
+                      }
+                      
+                      
+                      // Close the "Update Review" window
+                      updateReviewFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              updateReviewFrame.add(formPanel);
+
+              updateReviewFrame.setVisible(true);
+          }
+      });
+      panel.add(updateReviewButton);
+
       //Update Seller
       JButton updateSellerButton = new JButton("Update Seller");
       updateSellerButton.addActionListener(new ActionListener() {
@@ -1265,6 +1546,78 @@ public class AppUI {
            }
        });
        panel.add(deleteProductButton);
+
+       //Delete Review
+       JButton deleteReviewButton = new JButton("Delete Review");
+       deleteReviewButton.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+               // Display a new window to delete a Review
+               JFrame deleteReviewFrame = new JFrame("Delete Review");
+               deleteReviewFrame.setSize(300, 300);
+ 
+               // Create a panel to hold the form elements
+               JPanel formPanel = new JPanel();
+               formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+ 
+               // Delete text fields for the Product's name and email
+               JLabel idLbl = new JLabel("Insert Review ID:");
+               JTextField idTxt = new JTextField(10);
+               formPanel.add(idLbl);
+               formPanel.add(idTxt);
+ 
+               // Delete a button to submit the form
+               JButton submitButton = new JButton("Delete Review");
+               submitButton.addActionListener(new ActionListener() {
+                   public void actionPerformed(ActionEvent a) {
+                       // Get the values from the form fields and delete the Product to the database
+                       Integer id = Integer.parseInt(idTxt.getText());
+                       
+                       //Delete the Product to the database
+                       
+                       Connection connection = null;
+                       try {
+                           connection = DatabaseConnection.getConnection(); // get the database connection
+                           connection.setAutoCommit(false); // start the transaction
+                           CRUD<Review> reviewImp = new ReviewImp(connection);
+                           int result = reviewImp.delete(id);
+                          System.out.println(result);
+                           connection.commit();
+                       } catch (SQLException e) {
+                           if (connection != null) {
+                               try {
+                                   connection.rollback();
+                               } catch (SQLException e1) {
+                                   System.out.println("Could not delete new review nor rollback. See error stack trace.");
+                                   e1.printStackTrace();
+                               } // rollback the transaction if an exception occurs
+                           }
+                           System.out.println("Could not delete new review. See error stack trace.");
+                           e.printStackTrace();
+                       } finally {
+                           if (connection != null) {
+                               try {
+                                   connection.close(); // close the connection
+                               } catch (SQLException e) {
+                                   System.out.println("Connection could not close. See error stack trace.");
+                                   e.printStackTrace();
+                               } 
+                           }
+                       }
+                       
+                       
+                       // Close the "Delete Product" window
+                       deleteReviewFrame.dispose();
+                   }
+               });
+               formPanel.add(submitButton);
+ 
+               // Delete the form panel to the window
+               deleteReviewFrame.add(formPanel);
+ 
+               deleteReviewFrame.setVisible(true);
+           }
+       });
+       panel.add(deleteReviewButton);
  
  
        //Delete Seller
