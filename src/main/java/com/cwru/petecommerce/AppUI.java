@@ -6,11 +6,14 @@ import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.List;
+import java.util.Date;
 
 import com.cwru.petecommerce.utils.DatabaseConnection;
 import com.cwru.petecommerce.dao.implementation.*;
 import com.cwru.petecommerce.models.*;
 import com.cwru.petecommerce.dao.abstraction.CRUD;
+import com.cwru.petecommerce.dao.abstraction.CRUDComposite;
 
 public class AppUI {
     //private static Connection connection;
@@ -1408,6 +1411,206 @@ public class AppUI {
        panel.add(deleteCategoryButton);
 
 
+        //Add to cart UI
+      JButton addToCartButton = new JButton("Add to Cart");
+      addToCartButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Product
+              JFrame addToCartFrame = new JFrame("Add to Cart");
+              addToCartFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Product's name and email
+              JLabel prodIDdLbl = new JLabel("Product ID:");
+              JTextField prodIdTxt = new JTextField(10);
+              JLabel custIdLbl = new JLabel("Customer ID:");
+              JTextField custIdTxt = new JTextField(10);
+              JLabel quantityLbl = new JLabel("Quantity:");
+              JTextField quantityTxt = new JTextField(10);
+              formPanel.add(prodIDdLbl);
+              formPanel.add(prodIdTxt);
+              formPanel.add(custIdLbl);
+              formPanel.add(custIdTxt);
+              formPanel.add(quantityLbl);
+              formPanel.add(quantityTxt);
+              
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Add to Cart");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and update the Product to the database
+                      Integer prodId = Integer.parseInt(prodIdTxt.getText());
+                      Integer custId = Integer.parseInt(custIdTxt.getText());
+                      Integer quantity = Integer.parseInt(quantityTxt.getText());
+                      
+                      
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+                          
+                          // create the cart
+                          Cart cart = new Cart(custId, prodId, quantity);
+                          CRUDComposite<Cart> cartImp = new CartImp(connection);
+                          int result = cartImp.create(cart); // pass the connection to the create method
+                          System.out.println(result); // print the ID of the created cart
+                          
+                          connection.commit(); // commit the transaction
+                      } catch (SQLException e) {
+                        if (connection != null) {
+                            try {
+                                connection.rollback();
+                            } catch (SQLException e1) {
+                                System.out.println("Could not add to cart or rollback. See error stack trace.");
+                                e1.printStackTrace();
+                            } // rollback the transaction if an exception occurs
+                        }
+                      } finally {
+                        if (connection != null) {
+                            try {
+                                connection.close(); // close the connection
+                            } catch (SQLException e) {
+                                System.out.println("Connection could not close. See error stack trace.");
+                                e.printStackTrace();
+                            } 
+                        }
+                      }
+                      
+                      // Close the "Add to Cart" window
+                      addToCartFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              addToCartFrame.add(formPanel);
+
+              addToCartFrame.setVisible(true);
+          }
+      });
+      panel.add(addToCartButton);
+       
+      //Checkout UI
+      JButton checkoutButton = new JButton("Checkout");
+      checkoutButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Product
+              JFrame checkoutFrame = new JFrame("Checkout");
+              checkoutFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Product's name and email
+              JLabel custIdLbl = new JLabel("Customer ID:");
+              JTextField custIdTxt = new JTextField(10);
+              JLabel paymentTypeLbl = new JLabel("Payment Type:");
+              JTextField paymentTypeTxt = new JTextField(10);
+              formPanel.add(custIdLbl);
+              formPanel.add(custIdTxt);
+              formPanel.add(paymentTypeLbl);
+              formPanel.add(paymentTypeTxt);
+              
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Checkout");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and update the Product to the database
+                      Integer custId = Integer.parseInt(custIdTxt.getText());
+                      String paymentType = paymentTypeTxt.getText();
+                      
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+              
+                          // get all items in the customer's cart
+                          CartImp cartImp = new CartImp(connection);
+                          List<Cart> cartItems = cartImp.getAllByCustomerID(custId);
+                          
+                          // check if cart is empty
+                          if(cartItems.isEmpty()) {
+                              System.out.println("Cart is empty");
+                              return;
+                          }
+                          
+                          // get current date
+                          Date date = new Date();
+                          
+                          // create new purchase record
+                          PurchaseImp purchaseImp = new PurchaseImp(connection);
+                          Purchase purchase = new Purchase(0, paymentType, 0, date, custId, false);
+                          int purchaseID = purchaseImp.create(purchase);
+                          
+                          // insert items into PurchaseProduct table and update product stock
+                          ProductImp productImp = new ProductImp(connection);
+                          PurchaseProductImp purchaseProductImp = new PurchaseProductImp(connection);
+                          int totalAmount = 0;
+                          for(Cart cartItem: cartItems) {
+                              Optional<Product> optionalProduct = productImp.getById(cartItem.getProductID());
+                              if (optionalProduct.isPresent()) {
+                                  Product product = optionalProduct.get();
+              
+                                  // TODO: Deal with purchases where this is not the case
+                                  if(product.getStock() >= cartItem.getQuantity()) {
+                                      // reduce product stock by cart item quantity
+                                      productImp.updateStock(product.getId(), -cartItem.getQuantity());
+                          
+                                      // insert item into PurchaseProduct table
+                                      PurchaseProduct purchaseProduct = new PurchaseProduct(purchaseID, cartItem.getProductID(), product.getPrice(), cartItem.getQuantity());
+                                      purchaseProductImp.create(purchaseProduct);
+                          
+                                      // update total amount
+                                      totalAmount += product.getPrice() * cartItem.getQuantity();
+                                  }
+                              }
+                          }
+                      
+                          // update totalAmount in Purchase table
+                          purchase.setTotalAmount(totalAmount);
+                          purchaseImp.update(purchaseID, purchase);
+                          
+                          // delete all items in customer's cart
+                          cartImp.deleteAllByCustomerID(custId);
+              
+                      } catch (SQLException e) {
+                        try {
+                            connection.rollback();
+                        } catch (SQLException e1) {
+                            System.out.println("Could not checkout or rollback. See error stack trace.");
+                            e1.printStackTrace();
+                        } // rollback the transaction if an exception occurs
+                      } finally {
+                        if (connection != null) {
+                            try {
+                                connection.close(); // close the connection
+                            } catch (SQLException e) {
+                                System.out.println("Connection could not close. See error stack trace.");
+                                e.printStackTrace();
+                            } 
+                        }
+                      }
+
+                      
+                      // Close the "Add to Cart" window
+                      checkoutFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              checkoutFrame.add(formPanel);
+
+              checkoutFrame.setVisible(true);
+          }
+      });
+      panel.add(checkoutButton);
+
+
         //
         //
         //
@@ -1417,4 +1620,6 @@ public class AppUI {
         
         frame.setVisible(true);
     }
+
+    
 }
