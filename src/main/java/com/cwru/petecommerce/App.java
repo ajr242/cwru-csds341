@@ -131,7 +131,7 @@ public class App {
             carts.add(new Cart(10, 4, 1));
             carts.add(new Cart(10, 6, 2));
 
-            /*initDB();
+            initDB();
             insertSellers(sellers);
             insertCategories(categories);
             insertProducts(products);
@@ -140,7 +140,7 @@ public class App {
             insertCarts(carts);
             checkout(1, "Cash");
             checkout(6, "Credit");
-            checkout(7, "Debit");*/
+            checkout(7, "Debit");//
             System.out.println("Revenue by category");
             getRevenueByCategoryID(4);
             getRevenueByCategoryID(2);

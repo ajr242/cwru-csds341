@@ -2410,7 +2410,7 @@ public class AppUI {
               
               
               // Update a button to submit the form
-              JButton submitButton = new JButton("Filter by Ratings");
+              JButton submitButton = new JButton("Revenue by Date Range");
               submitButton.addActionListener(new ActionListener() {
                   public void actionPerformed(ActionEvent a) {
                       // Get the values from the form fields and update the Product to the database
@@ -2426,7 +2426,6 @@ public class AppUI {
                       Calendar calendar1 = Calendar.getInstance();
                       calendar1.set(endYear, endMonth-1, endDay);
                       Date endDate = calendar1.getTime();
-
                       
                       Connection connection = null;
                       try {
@@ -2471,13 +2470,13 @@ public class AppUI {
               formPanel.add(submitButton);
 
               // Update the form panel to the window
-              revenueByDateRangeButton.add(formPanel);
+              revenueByDateRangeFrame.add(formPanel);
 
-              revenueByDateRangeButton.setVisible(true);
+              revenueByDateRangeFrame.setVisible(true);
           }
 
       });
-      panel.add(filterByAvgRatingButton);
+      panel.add(revenueByDateRangeButton);
         //
         //
         //
