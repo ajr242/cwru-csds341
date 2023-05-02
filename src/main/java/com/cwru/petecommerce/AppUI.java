@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Calendar;
 
 import com.cwru.petecommerce.utils.DatabaseConnection;
 import com.cwru.petecommerce.dao.implementation.*;
@@ -2085,8 +2086,16 @@ public class AppUI {
               
                           PurchaseProductImp purchaseproductImp = new PurchaseProductImp(connection);
                           int revenue = purchaseproductImp.getTotalRevenueByCategory(catId);
-                           System.out.println(revenue / 100);
 
+                           JFrame readFrame1 = new JFrame("Revenue by Category ID");
+                          readFrame1.setSize(500, 150);
+                           JPanel formPanel1 = new JPanel();
+                           formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
+                            JLabel found = new JLabel(String.valueOf(revenue / 100));
+                            formPanel1.add(found);
+                           
+                        readFrame1.add(formPanel1);
+                        readFrame1.setVisible(true);
                           connection.commit(); // commit the transaction
                       } catch (SQLException e) {
                         try {
@@ -2356,6 +2365,115 @@ public class AppUI {
               filterByAvgRatingFrame.add(formPanel);
 
               filterByAvgRatingFrame.setVisible(true);
+          }
+
+      });
+      panel.add(filterByAvgRatingButton);
+
+      //Filter by average rating
+      JButton revenueByDateRangeButton = new JButton("Revenue by Date Range");
+      revenueByDateRangeButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              // Display a new window to update a Product
+              JFrame revenueByDateRangeFrame = new JFrame("Revenue by Date Range");
+              revenueByDateRangeFrame.setSize(300, 300);
+
+              // Create a panel to hold the form elements
+              JPanel formPanel = new JPanel();
+              formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+
+              // Update text fields for the Product's name and email
+              JLabel startDayLbl = new JLabel("Start Day");
+              JTextField startDayTxt = new JTextField(10);
+              JLabel startMonthLbl = new JLabel("Start Month");
+              JTextField startMonthTxt = new JTextField(10);
+              JLabel startYearLbl = new JLabel("Start Year");
+              JTextField startYearTxt = new JTextField(10);
+              JLabel endDayLbl = new JLabel("End Date");
+              JTextField endDayTxt = new JTextField(10);
+              JLabel endMonthLbl = new JLabel("End Month");
+              JTextField endMonthTxt = new JTextField(10);
+              JLabel endYearLbl = new JLabel("End Year");
+              JTextField endYearTxt = new JTextField(10);
+              formPanel.add(startDayLbl);
+              formPanel.add(startDayTxt);
+              formPanel.add(startMonthLbl);
+              formPanel.add(startMonthTxt);
+              formPanel.add(startYearLbl);
+              formPanel.add(startYearTxt);
+              formPanel.add(endDayLbl);
+              formPanel.add(endDayTxt);
+              formPanel.add(endMonthLbl);
+              formPanel.add(endMonthTxt);
+              formPanel.add(endYearLbl);
+              formPanel.add(endYearTxt);
+              
+              
+              // Update a button to submit the form
+              JButton submitButton = new JButton("Filter by Ratings");
+              submitButton.addActionListener(new ActionListener() {
+                  public void actionPerformed(ActionEvent a) {
+                      // Get the values from the form fields and update the Product to the database
+                      Integer startDay = Integer.parseInt(startDayTxt.getText());
+                      Integer startMonth = Integer.parseInt(startMonthTxt.getText());
+                      Integer startYear = Integer.parseInt(startYearTxt.getText());
+                      Integer endDay = Integer.parseInt(endDayTxt.getText());
+                      Integer endMonth = Integer.parseInt(endMonthTxt.getText());
+                      Integer endYear = Integer.parseInt(endYearTxt.getText());
+                      Calendar calendar = Calendar.getInstance();
+                      calendar.set(startYear, startMonth-1, startDay);
+                      Date startDate = calendar.getTime();
+                      Calendar calendar1 = Calendar.getInstance();
+                      calendar1.set(endYear, endMonth-1, endDay);
+                      Date endDate = calendar1.getTime();
+
+                      
+                      Connection connection = null;
+                      try {
+                          connection = DatabaseConnection.getConnection(); // get the database connection
+                          connection.setAutoCommit(false); // start the transaction
+              
+                          PurchaseProductImp purchaseProductImp = new PurchaseProductImp(connection);
+                          int revenue = purchaseProductImp.getRevenueByDateRange(startDate, endDate);
+                          
+                          JFrame readFrame1 = new JFrame("Revenue by Date Range");
+                          readFrame1.setSize(500, 150);
+                           JPanel formPanel1 = new JPanel();
+                           formPanel1.setLayout(new BoxLayout(formPanel1, BoxLayout.Y_AXIS));
+                            JLabel found = new JLabel(String.valueOf(revenue));
+                            formPanel1.add(found);
+                            readFrame1.add(formPanel1);
+                            readFrame1.setVisible(true);
+
+                          connection.commit(); // commit the transaction
+                      } catch (SQLException e) {
+                        try {
+                            connection.rollback();
+                        } catch (SQLException e1) {
+                            System.out.println("Could not get filtered dates or rollback. See error stack trace.");
+                            e1.printStackTrace();
+                        } // rollback the transaction if an exception occurs
+                      } finally {
+                        if (connection != null) {
+                            try {
+                                connection.close(); // close the connection
+                            } catch (SQLException e) {
+                                System.out.println("Connection could not close. See error stack trace.");
+                                e.printStackTrace();
+                            } 
+                        }
+                      }
+
+                      // Close the "get revenue by category id" window
+                      revenueByDateRangeFrame.dispose();
+                  }
+              });
+              formPanel.add(submitButton);
+
+              // Update the form panel to the window
+              revenueByDateRangeButton.add(formPanel);
+
+              revenueByDateRangeButton.setVisible(true);
           }
 
       });
