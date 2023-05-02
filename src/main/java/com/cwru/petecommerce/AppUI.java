@@ -2341,7 +2341,7 @@ public class AppUI {
                         try {
                             connection.rollback();
                         } catch (SQLException e1) {
-                            System.out.println("Could not get best filtered product or rollback. See error stack trace.");
+                            System.out.println("Could not get best filtered products or rollback. See error stack trace.");
                             e1.printStackTrace();
                         } // rollback the transaction if an exception occurs
                       } finally {
@@ -2370,7 +2370,7 @@ public class AppUI {
       });
       panel.add(filterByAvgRatingButton);
 
-      //Filter by average rating
+      //Revenue By date range
       JButton revenueByDateRangeButton = new JButton("Revenue by Date Range");
       revenueByDateRangeButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -2382,7 +2382,7 @@ public class AppUI {
               JPanel formPanel = new JPanel();
               formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
 
-              // Update text fields for the Product's name and email
+              // Update text fields for the date information
               JLabel startDayLbl = new JLabel("Start Day");
               JTextField startDayTxt = new JTextField(10);
               JLabel startMonthLbl = new JLabel("Start Month");
@@ -2413,7 +2413,7 @@ public class AppUI {
               JButton submitButton = new JButton("Revenue by Date Range");
               submitButton.addActionListener(new ActionListener() {
                   public void actionPerformed(ActionEvent a) {
-                      // Get the values from the form fields and update the Product to the database
+                      // Get the values from the form fields to input in the date
                       Integer startDay = Integer.parseInt(startDayTxt.getText());
                       Integer startMonth = Integer.parseInt(startMonthTxt.getText());
                       Integer startYear = Integer.parseInt(startYearTxt.getText());
@@ -2426,6 +2426,9 @@ public class AppUI {
                       Calendar calendar1 = Calendar.getInstance();
                       calendar1.set(endYear, endMonth-1, endDay);
                       Date endDate = calendar1.getTime();
+                      System.out.println(endDate);
+                      Date today = new Date();
+                      System.out.println(today);
                       
                       Connection connection = null;
                       try {
@@ -2477,11 +2480,7 @@ public class AppUI {
 
       });
       panel.add(revenueByDateRangeButton);
-        //
-        //
-        //
-        //
-        //
+        
         frame.add(panel);
         
         frame.setVisible(true);
